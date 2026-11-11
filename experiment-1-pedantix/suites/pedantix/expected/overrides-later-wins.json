@@ -1,0 +1,9 @@
+{
+  "id": "overrides-later-wins",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ keep = { a = 2; b = 1; }; other = { d = 1; c = 2; }; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

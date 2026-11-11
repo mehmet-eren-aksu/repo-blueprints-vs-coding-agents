@@ -1,0 +1,11 @@
+{
+  "id": "fmt-xdg-command-allowed",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "proj/f.nix": "{ a = 2; b = 1; }\n"
+  },
+  "stderr_sample": ""
+}

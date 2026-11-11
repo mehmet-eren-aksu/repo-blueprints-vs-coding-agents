@@ -1,0 +1,9 @@
+{
+  "id": "inherit-multiple-groups",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ inherit (lib) mkDefault mkIf; inherit b c; x = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

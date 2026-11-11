@@ -1,0 +1,18 @@
+{
+  "id": "cfg-discovered-hidden-name",
+  "feature": "config.discovery",
+  "desc": ".pedantix.toml is found too",
+  "args": [
+    "{tmp}/f.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    ".pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "f.nix": "{ a = 1; c = 2; b = 3; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

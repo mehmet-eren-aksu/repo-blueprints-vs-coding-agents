@@ -1,0 +1,10 @@
+{
+  "id": "inherit-multiple-groups",
+  "feature": "sort.inherits",
+  "desc": "Several inherit statements",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[inherits]\nsort = true"
+  ],
+  "stdin": "{ inherit (lib) mkIf mkDefault; inherit c b; x = 1; }\n"
+}

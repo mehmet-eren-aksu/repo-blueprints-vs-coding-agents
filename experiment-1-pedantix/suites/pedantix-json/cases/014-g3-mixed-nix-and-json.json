@@ -1,0 +1,27 @@
+{
+  "id": "g3-mixed-nix-and-json",
+  "feature": "g3.io",
+  "desc": "Nix and JSON files in one call are both handled",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/a.nix",
+    "{tmp}/b.json"
+  ],
+  "files": {
+    "a.nix": "{ b = 1; a = 2; }\n",
+    "b.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "a.nix",
+    "b.json"
+  ],
+  "exact_files": [
+    "a.nix"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

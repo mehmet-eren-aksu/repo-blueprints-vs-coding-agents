@@ -1,0 +1,9 @@
+{
+  "id": "g2-override-star-one-component",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"services\": {\n    \"foo\": {\n      \"description\": \"d\",\n      \"a\": 2,\n      \"nested\": {\n        \"b\": 1,\n        \"description\": \"x\"\n      },\n      \"z\": 1\n    }\n  }\n}\n",
+  "files": {}
+}

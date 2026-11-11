@@ -1,0 +1,11 @@
+{
+  "id": "spacing-top-level-2",
+  "feature": "spacing",
+  "desc": "top-level-blank-lines = 2",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ntop-level-blank-lines = 2"
+  ],
+  "stdin": "{\n  b = 2;\n\n\n  a = 1;\n  c = { y = 2; x = 1; };\n}\n",
+  "idempotent": true
+}

@@ -1,0 +1,19 @@
+{
+  "id": "cfg-files-cwd-anchored",
+  "feature": "config.files",
+  "desc": "'./' anchors a pattern at the working directory",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n\n[[files]]\npattern = \"./*.nix\"\nattrs.sort = false\n",
+    "top.nix",
+    "pkgs/nested.nix"
+  ],
+  "files": {
+    "top.nix": "{ b = 1; a = 2; }\n",
+    "pkgs/nested.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "top.nix",
+    "pkgs/nested.nix"
+  ]
+}

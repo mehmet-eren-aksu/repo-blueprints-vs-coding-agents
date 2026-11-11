@@ -1,0 +1,16 @@
+{
+  "id": "g2-override-later-wins",
+  "feature": "g2.overrides",
+  "desc": "A later override wins over an earlier one",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**\"\nattrs.sort = false\n[[overrides]]\npath = \"keep\"\nattrs.sort = true",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"keep\": {\"b\": 1, \"a\": 2}, \"other\": {\"d\": 1, \"c\": 2}}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

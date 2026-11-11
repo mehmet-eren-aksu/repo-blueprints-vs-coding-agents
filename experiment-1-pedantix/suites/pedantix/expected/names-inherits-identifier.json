@@ -1,0 +1,9 @@
+{
+  "id": "names-inherits-identifier",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ inherit a b; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

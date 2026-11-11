@@ -1,0 +1,12 @@
+{
+  "id": "g3-mixed-nix-and-json",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "a.nix": "{ a = 2; b = 1; }\n",
+    "b.json": "{\n  \"a\": 2,\n  \"b\": 1\n}\n"
+  }
+}

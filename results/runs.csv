@@ -1,0 +1,11 @@
+experiment,pair,model,arm,acceptance_passed,acceptance_total,regressions_broken,minutes,failed_tests
+pedantix-json,1,opus-5.5-high,A,40,40,0,6,
+pedantix-json,1,opus-5.5-high,B,40,40,0,5.5,
+sqlfluff-8580,1,opus-5.5-high,A,18,18,0,8,
+sqlfluff-8580,1,opus-5.5-high,B,18,18,0,10.5,
+sqlfluff-8580,2,haiku-5.5,A,17,18,0,12,LT05_test_fail_list_wrapping_fill_alone
+sqlfluff-8580,2,haiku-5.5,B,18,18,0,14,
+sqlfluff-8580,3,haiku-5.5,A,18,18,0,10.5,
+sqlfluff-8580,3,haiku-5.5,B,17,18,0,7,LT05_test_fail_list_wrapping_fill_alone
+sqlfluff-8580,4,haiku-5.5,A,17,18,0,13.5,LT05_test_fail_list_wrapping_fill_alone
+sqlfluff-8580,4,haiku-5.5,B,18,18,0,8,

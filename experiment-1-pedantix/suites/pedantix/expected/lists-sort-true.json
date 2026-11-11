@@ -1,0 +1,9 @@
+{
+  "id": "lists-sort-true",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ xs = [ \"a\" \"b\" \"c\" ]; ys = [ pkgs.a pkgs.z ]; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

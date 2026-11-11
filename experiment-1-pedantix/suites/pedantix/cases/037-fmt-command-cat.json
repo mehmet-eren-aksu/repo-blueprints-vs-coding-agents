@@ -1,0 +1,10 @@
+{
+  "id": "fmt-command-cat",
+  "feature": "formatter",
+  "desc": "formatter-command runs as a stdin->stdout filter",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"cat\"]"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

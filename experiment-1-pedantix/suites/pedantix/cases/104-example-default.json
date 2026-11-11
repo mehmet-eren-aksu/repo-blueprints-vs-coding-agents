@@ -1,0 +1,11 @@
+{
+  "id": "example-default",
+  "feature": "realistic",
+  "desc": "The project's example.nix with defaults",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  flake.modules.homeManager.git =\n    {\n      lib,\n      config,\n      confLib,\n      globals ? {\n        user.name = \"duck\";\n      },\n            nixosConfig ? null,\n      minimal,\n\n      ...\n    }:\n    let\n      gitUser = globals.user.name;\n      inherit (confLib.getConfig.repo.secrets.common.mail) bababear address1;\n      inherit (confLib.getConfig.repo.secrets.common) fullName;\n\n\n    in\n    {\n      config = {\n        programs.difftastic.enable = lib.mkIf (!minimal) true;\n        programs.git = {\n          enable = true;\n        }\n        // lib.optionalAttrs (!minimal) {\n          includes = [\n            {\n              contents = {\n                commit = {\n                  template = \"~/.gitmessage\";\n                };\n                github = {\n                  user = gitUser;\n                };\n              };\n            }\n          ];\n          lfs.enable = true;\n          settings = {\n            alias = {\n              a = \"add\";\n              b = \"branch\";\n              c = \"commit\";\n              cl = \"clone\";\n              co = \"checkout\";\n              i = \"init\";\n              m = \"merge\";\n              p = \"pull\";\n              pp = \"push\";\n              r = \"restore\";\n              s = \"status\";\n            };\n            user = {\n              email = lib.mkIf ((nixosConfig != null) && !config.swarselsystems.isPublic) (\n                lib.mkDefault address1\n              );\n              name = lib.mkIf ((nixosConfig != null) && !config.swarselsystems.isPublic) fullName;\n            };\n          };\n          signing = {\n            format = \"openpgp\";\n            key = \"0x76FD3810215AE097\";\n            signByDefault = true;\n          };\n        };\n        swarselsystems.enabledHomeModules = [ \"git\" ];\n      };\n    };\n}\n",
+  "idempotent": true
+}

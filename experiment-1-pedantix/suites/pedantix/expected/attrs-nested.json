@@ -1,0 +1,9 @@
+{
+  "id": "attrs-nested",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = 1;\n  b = {\n    y = 2;\n    z = 1;\n  };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

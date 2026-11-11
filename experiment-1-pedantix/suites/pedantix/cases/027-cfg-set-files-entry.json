@@ -1,0 +1,18 @@
+{
+  "id": "cfg-set-files-entry",
+  "feature": "config.set",
+  "desc": "--set can add [[files]] entries",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--set",
+    "files=[{pattern=\"*.nix\", attrs.last=[\"a\"]}]",
+    "{tmp}/f.nix"
+  ],
+  "files": {
+    "f.nix": "{ a = 1; c = 2; b = 3; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

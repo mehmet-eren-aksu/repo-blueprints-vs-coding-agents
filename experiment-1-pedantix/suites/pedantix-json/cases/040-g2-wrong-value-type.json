@@ -1,0 +1,16 @@
+{
+  "id": "g2-wrong-value-type",
+  "feature": "g2.errors",
+  "desc": "A wrongly typed config value is still rejected",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nsort = \"yes\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "merge-with-existing-set",
+  "feature": "attrs.merge",
+  "desc": "merge into an existing nested set",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nmerge = true"
+  ],
+  "stdin": "{ a.b = 1; a = { c = 2; }; }\n"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "fmt-discovered-files-entry-command-refused",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {
+    "f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "stderr_sample": "pedantix: /private{tmp}/pedantix.toml sets `formatter-command`, which is not executed from auto-discovered config files; rerun with --allow-formatter-command if you trust this repository, pass the file via --config, or override with --formatter\n"
+}

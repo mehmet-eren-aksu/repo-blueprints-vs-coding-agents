@@ -1,0 +1,11 @@
+{
+  "id": "attrs-dynamic-key",
+  "feature": "sort.attrs",
+  "desc": "Interpolated keys",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ b = 1; ${name} = 2; a = 3; \"x${y}\" = 4; }\n",
+  "idempotent": true
+}

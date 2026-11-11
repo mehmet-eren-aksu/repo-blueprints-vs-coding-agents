@@ -1,0 +1,11 @@
+{
+  "id": "args-at-pattern",
+  "feature": "sort.args",
+  "desc": "Formals with an @ binding",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "args@{ pkgs, lib, ... }:\nlib\n",
+  "idempotent": true
+}

@@ -1,0 +1,1282 @@
+# SQLFluff uyarlama haritası (blueprint/0.2). Tek doğruluk kaynağı.
+# Anahtarlar İngilizce, açıklamalar Türkçe. Yollar repo köküne göredir.
+# Not: Kod yazımı ve test komutları için AGENTS.md dosyalarına bakın;
+# bu harita onların söylemediği davranış ve bağlantılara odaklanır.
+
+summary: "SQLFluff, SQL dosyalarını şablonlayıp (jinja/python/placeholder/raw ya da eklenti), seçilen dialektin grammar'ıyla lexleyip parse eden, segment ağacı üzerinde kurallar çalıştırıp ihlal raporlayan ve düzeltmeleri kaynak dosyaya geri yamalayan dialekt-esnek bir linter/formatlayıcıdır."
+
+entrypoints:
+  - where: pyproject.toml:114
+    what: "`sqlfluff` konsol komutu -> sqlfluff.cli.commands:cli"
+  - where: src/sqlfluff/cli/commands.py:611
+    what: "click grubu; alt komutlar lint (718), fix (1431), format (1547), parse (1731), render (1879), rules (632), dialects (654), version"
+  - where: src/sqlfluff/__main__.py:1
+    what: "`python -m sqlfluff` -> aynı cli"
+  - where: src/sqlfluff/api/simple.py:74
+    what: "Python API: lint() (74), fix() (115), parse() (168); Linter'ı string üzerinde sarar"
+  - where: src/sqlfluff/core/linter/linter.py:58
+    what: "Linter sınıfı; programatik ana giriş (lint_paths, lint_string, parse_string, render_string)"
+  - where: pyproject.toml:116
+    what: "diff_cover eklentisi -> src/sqlfluff/diff_quality_plugin.py (diff-quality entegrasyonu)"
+  - where: pyproject.toml:119
+    what: "pluggy entry-point grubu `sqlfluff`; çekirdek kurallar ve templater'lar da bu yoldan yüklenir"
+
+pipeline:
+  - id: P1
+    stage: config-root
+    what: "CLI bayrakları override sözlüğüne çevrilir; FluffConfig.from_root cwd'den config yükler, varsayılanlar eklentilerden (load_default_config) gelir, dialekt ve templater nesneleri kurulur"
+    where: [src/sqlfluff/cli/commands.py:505, src/sqlfluff/core/config/fluffconfig.py:279, src/sqlfluff/core/config/fluffconfig.py:125]
+  - id: P2
+    stage: discovery
+    what: "Yollar dosyalara açılır; uzantı filtresi (sql_file_exts, kök config) ve .sqlfluffignore / ignore_paths uygulanır; dizin sonuçları sıralanır"
+    where: [src/sqlfluff/core/linter/linter.py:1162, src/sqlfluff/core/linter/discovery.py:245]
+  - id: P3
+    stage: runner
+    what: "processes değerine göre Sequential/MultiProcess/MultiThread runner seçilir; templater.sequence_files dosya sırasını belirleyebilir"
+    where: [src/sqlfluff/core/linter/runner.py:370, src/sqlfluff/core/linter/runner.py:49]
+  - id: P4
+    stage: load-file
+    what: "Dosyaya özel çocuk config (make_child_from_path), encoding tespiti, bayt boyut sınırı, okuma (backslashreplace) ve dosya içi `-- sqlfluff:` direktifleri"
+    where: [src/sqlfluff/core/linter/linter.py:122, src/sqlfluff/core/config/fluffconfig.py:759]
+  - id: P5
+    stage: templating
+    what: "Satır sonları \\n'e normalize edilir; templater.process_with_variants en fazla render_variant_limit TemplatedFile üretir; ölümcül şablon hatası TMP ihlali olur"
+    where: [src/sqlfluff/core/linter/linter.py:921, src/sqlfluff/core/templaters/base.py:583]
+  - id: P6
+    stage: lexing
+    what: "Her varyant dialektin lexer matcher'larıyla lexlenir (PyLexer ya da kuruluysa Rust lexer); eşleşmeyen karakterler UnlexableSegment + LXR olur; şablon blok girinti metası dengelenir"
+    where: [src/sqlfluff/core/linter/linter.py:170, src/sqlfluff/core/parser/lexer.py:765]
+  - id: P7
+    stage: parsing
+    what: "max_parse_nodes kontrolü; Python Parser ya da RustParser; kök FileSegment.root_parse grammar'ı eşleştirir, eşleşmeyen kod UnparsableSegment olur; her unparsable bölüm için PRS ihlali"
+    where: [src/sqlfluff/core/linter/linter.py:228, src/sqlfluff/core/parser/parser.py:30, src/sqlfluff/core/parser/segments/file.py:44]
+  - id: P8
+    stage: rule-loop
+    what: "RulePack (sıralı kurallar) ağaç üzerinde crawl edilir; noqa maskesi uygulanır; fix modunda runaway_limit kadar main + 2 post döngüsü, her kuralın fix'leri apply_fixes ile uygulanır"
+    where: [src/sqlfluff/core/linter/linter.py:457, src/sqlfluff/core/rules/base.py:518, src/sqlfluff/core/linter/fix.py:107]
+  - id: P9
+    stage: aggregate
+    what: "Kök + alternatif varyant sonuçları birleşir; ignore/warnings işaretlenir; kaynak uzayında tekilleştirilip sıralanır -> LintedFile"
+    where: [src/sqlfluff/core/linter/linter.py:711, src/sqlfluff/core/linter/linter.py:842]
+  - id: P10
+    stage: patch-persist
+    what: "Düzeltilmiş ağaçtan kaynak yamaları üretilir, varyantlar arasında birleşir, kaynak dizgesine uygulanır; fix'te geçici dosya üzerinden yazılır"
+    where: [src/sqlfluff/core/linter/patch.py:271, src/sqlfluff/core/linter/linted_file.py:195, src/sqlfluff/core/linter/linted_file.py:390]
+  - id: P11
+    stage: report-exit
+    what: "LintedDir kayıt ve sayaçları tutar; CLI formatı (human/json/yaml/sarif/github/gitlab/none) seçilir; çıkış kodu ihlal sayısından türetilir"
+    where: [src/sqlfluff/core/linter/linted_dir.py:63, src/sqlfluff/cli/commands.py:829, src/sqlfluff/core/linter/linting_result.py:119]
+
+modules:
+  - path: src/sqlfluff/core/parser/
+    role: "Dialektten bağımsız parse motoru: lexer motoru, grammar kombinatörleri (Sequence/OneOf/Delimited/Bracketed/Ref...), eşleştirme algoritmaları, segment ağacı, konum işaretçileri"
+    layer: core
+    depends_on: [src/sqlfluff/core/config/, src/sqlfluff/core/errors.py, src/sqlfluff/core/templaters/base.py]
+  - path: src/sqlfluff/core/parser/rust_parser.py
+    role: "sqlfluffrs varsa Rust parse sonucunu (MatchResult) Python segment ağacına çeviren köprü; yoksa RustParser=None"
+    layer: core
+    depends_on: [sqlfluffrs/, src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/core/dialects/base.py
+    role: "Dialect sınıfı: segment/grammar kütüphanesi, add/replace, copy_as kalıtımı, expand, lexer matcher yamaları, keyword set'leri"
+    layer: core
+    depends_on: [src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/core/dialects/__init__.py
+    role: "Dialekt kayıt tablosu ve tembel yükleyici (dialect_selector, load_raw_dialect, dialect_readout)"
+    layer: mixed
+    domain_lines: [src/sqlfluff/core/dialects/__init__.py:23-64]
+    depends_on: [src/sqlfluff/dialects/]
+  - path: src/sqlfluff/core/dialects/common.py
+    role: "Nesne referansı / alias yardımcıları; dialekt adı + segment türüne göre dispatch"
+    layer: mixed
+    domain_lines: [src/sqlfluff/core/dialects/common.py:133-210, src/sqlfluff/core/dialects/common.py:243-350]
+    depends_on: [src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/dialects/
+    role: "28 dialekt modülü + keyword dosyaları (aile; bkz. E1). ~94k satır, kodun en büyük kısmı"
+    layer: domain
+    depends_on: [src/sqlfluff/core/dialects/, src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/core/templaters/base.py
+    role: "RawTemplater arayüzü, TemplatedFile (kaynak<->şablonlanmış kesit eşlemesi), büyük dosya karakter sınırı"
+    layer: core
+    depends_on: [src/sqlfluff/core/config/, src/sqlfluff/core/errors.py]
+  - path: src/sqlfluff/core/templaters/
+    role: "Somut templater'lar: jinja.py, python.py, placeholder.py, slicers/ (jinja izleme ile kesit çıkarımı)"
+    layer: domain
+    depends_on: [src/sqlfluff/core/templaters/base.py]
+  - path: src/sqlfluff/core/linter/
+    role: "Orkestrasyon: Linter, runner'lar, fix uygulama, kaynak yamaları, sonuç kapları (LintedFile/LintedDir/LintingResult)"
+    layer: core
+    depends_on: [src/sqlfluff/core/parser/, src/sqlfluff/core/rules/, src/sqlfluff/core/templaters/, src/sqlfluff/core/config/]
+  - path: src/sqlfluff/core/linter/discovery.py
+    role: "Yol genişletme, uzantı eşleme, ignore dosyaları (gitignore semantiği, pathspec)"
+    layer: mixed
+    domain_lines: [src/sqlfluff/core/linter/discovery.py:109-113]
+    depends_on: [src/sqlfluff/core/config/file.py]
+  - path: src/sqlfluff/core/config/
+    role: "Config bulma, ini/toml okuma, yol çözümleme, doğrulama, kaldırılmış anahtar çevirisi, FluffConfig"
+    layer: mixed
+    domain_lines: [src/sqlfluff/core/config/file.py:27-35, src/sqlfluff/core/config/toml.py:58-64, src/sqlfluff/core/config/fluffconfig.py:500-505]
+    depends_on: [src/sqlfluff/core/plugin/, src/sqlfluff/core/helpers/]
+  - path: src/sqlfluff/core/default_config.cfg
+    role: "Tüm varsayılanlar: core, indentation, segment türüne göre layout (62 bölüm), templater, kural ayarları"
+    layer: domain
+    depends_on: []
+  - path: src/sqlfluff/core/rules/
+    role: "Kural çerçevesi: BaseRule (metaclass ile kod/açıklama), crawler'lar, RuleSet/RulePack seçimi, LintFix, LintResult, noqa"
+    layer: core
+    depends_on: [src/sqlfluff/core/parser/, src/sqlfluff/core/plugin/]
+  - path: src/sqlfluff/core/rules/noqa.py
+    role: "noqa direktiflerini ayrıştırma ve maskeleme"
+    layer: mixed
+    domain_lines: [src/sqlfluff/core/rules/noqa.py:74-80, src/sqlfluff/core/rules/noqa.py:151-160]
+    depends_on: [src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/core/plugin/
+    role: "pluggy host: entry-point keşfi, hookspec'ler (get_rules, load_default_config, get_configs_info), çekirdek hookimpl'ler (lib.py)"
+    layer: core
+    depends_on: [src/sqlfluff/core/rules/, src/sqlfluff/core/templaters/]
+  - path: src/sqlfluff/core/errors.py
+    role: "İhlal türleri (TMP/LXR/PRS/kural kodu/NOQA), ignore/warning işaretleme, kaynak imzası"
+    layer: core
+    depends_on: []
+  - path: src/sqlfluff/core/formatter.py
+    role: "FormatterInterface: çekirdeğin CLI'ye çıktı gönderdiği soyut arayüz"
+    layer: core
+    depends_on: []
+  - path: src/sqlfluff/core/helpers/
+    role: "dict/string/slice/file yardımcıları (encoding tespiti, ara yol üretimi)"
+    layer: core
+    depends_on: []
+  - path: src/sqlfluff/rules/
+    role: "79 standart kural, 11 paket (aile; bkz. E2)"
+    layer: domain
+    depends_on: [src/sqlfluff/core/rules/, src/sqlfluff/utils/]
+  - path: src/sqlfluff/utils/reflow/
+    role: "Boşluk/satır kırma/girinti motoru (LT kuralları kullanır); config'i segment türlerine göre okur"
+    layer: mixed
+    domain_lines: [src/sqlfluff/utils/reflow/sequence.py:620-620, src/sqlfluff/utils/reflow/reindent.py:1613-1613, src/sqlfluff/utils/reflow/reindent.py:2418-2418]
+    depends_on: [src/sqlfluff/core/rules/, src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/utils/analysis/
+    role: "SELECT/CTE/sorgu yapısı analizi (AL/RF/ST kuralları kullanır)"
+    layer: domain
+    depends_on: [src/sqlfluff/core/dialects/common.py]
+  - path: src/sqlfluff/utils/functional/
+    role: "Segment koleksiyonları için fonksiyonel sorgu yardımcıları"
+    layer: core
+    depends_on: [src/sqlfluff/core/parser/]
+  - path: src/sqlfluff/utils/testing/
+    role: "Kural/CLI/YAML test yardımcıları (eklenti yazarları için testutils)"
+    layer: core
+    depends_on: [src/sqlfluff/core/]
+  - path: src/sqlfluff/cli/
+    role: "click komutları, seçenekler, çıktı politikası ve akışları, insan formatlayıcı"
+    layer: mixed
+    domain_lines: [src/sqlfluff/cli/commands.py:829-1074]
+    depends_on: [src/sqlfluff/core/]
+  - path: src/sqlfluff/api/
+    role: "İnce Python API cephesi (simple.py) ve bilgi fonksiyonları (info.py)"
+    layer: core
+    depends_on: [src/sqlfluff/core/]
+  - path: plugins/sqlfluff-templater-dbt/
+    role: "dbt templater eklentisi (JinjaTemplater alt sınıfı, ana süreçte şablonlar)"
+    layer: domain
+    depends_on: [src/sqlfluff/core/templaters/]
+  - path: plugins/sqlfluff-templater-sqlmesh/
+    role: "sqlmesh templater eklentisi"
+    layer: domain
+    depends_on: [src/sqlfluff/core/templaters/]
+  - path: plugins/sqlfluff-plugin-example/
+    role: "Örnek kural eklentisi (get_rules, load_default_config, get_configs_info)"
+    layer: domain
+    depends_on: [src/sqlfluff/core/plugin/]
+  - path: sqlfluffrs/
+    role: "Deneysel Rust lexer/parser/kurallar (Cargo workspace); dialekt tabloları Python dialektlerinden üretilir (sqlfluffrs/AGENTS.md)"
+    layer: mixed
+    domain_lines: [sqlfluffrs/tests/fixture_tests.rs:1-2303]
+    depends_on: [utils/rustify.py, src/sqlfluff/dialects/]
+
+# Büyük repo kuralı: tekrarlayan aileler tek kalıp olarak.
+families:
+  - id: F1
+    name: dialects
+    interface: "Modül düzeyinde `<ad>_dialect = load_raw_dialect('<ebeveyn>').copy_as(name, formatted_name, docstring)`; aynı adlı BaseSegment alt sınıfları otomatik replace/add edilir (core/dialects/__init__.py:76)"
+    members: "src/sqlfluff/dialects/dialect_*.py (28 dialekt, _dialect_lookup: core/dialects/__init__.py:23)"
+    inheritance: "ansi -> {athena, bigquery, clickhouse, db2, exasol, flink, hive, mysql, oracle, postgres, snowflake, soql, sparksql, sqlite, teradata, trino, tsql, vertica}; postgres -> {duckdb, greenplum, materialize, redshift}; mysql -> {mariadb, doris, starrocks}; hive -> impala; sparksql -> databricks"
+    representative: "src/sqlfluff/dialects/dialect_sqlite.py (1324 satır): copy_as 43, patch_lexer_matchers 66, insert_lexer_matchers 114, add 164, replace 206"
+    checklist: E1
+    outliers:
+      - "ansi kendisi Dialect(...) ile sıfırdan kurulur ve lexer'ı tanımlar (dialect_ansi.py:74)"
+      - "Birden çok ebeveynden grammar ödünç alanlar: duckdb (ansi+postgres), redshift (postgres+ansi), sparksql (ansi+hive)"
+      - "_legacy_dialects: exasol_fs ve spark3 adları yönlendirme hatası verir (core/dialects/__init__.py:54)"
+      - "Yalnız tsql için ayrıntılı ajan talimatı var: src/sqlfluff/dialects/dialect_instructions/tsql.md"
+  - id: F2
+    name: rules
+    interface: "class Rule_<KOD>(BaseRule) + paket __init__.py'de @hookimpl get_rules() (tembel import) ve isteğe bağlı get_configs_info(); _eval(context) -> LintResult | list[LintResult] | None"
+    members: "src/sqlfluff/rules/<paket>/<KOD>.py; 79 kural: aliasing 10, ambiguous 9, capitalisation 5, convention 13, jinja 1, layout 15, oracle 1, postgres 2, references 7, structure 12, tsql 4"
+    representative: "src/sqlfluff/rules/layout/LT01.py (71 satır): name 53, groups 64, RootOnlyCrawler 65, is_fix_compatible 66; mantık utils/reflow'a devredilir"
+    checklist: E2
+    outliers:
+      - "lint_phase='post': CP01-CP05, LT12, LT13"
+      - "is_fix_compatible=False (yalnız raporlar): AL03, AL04, AL06, AL08, AL10, AM01, AM04, AM06, AM07, AM09, CV08, CV09, CV13, PG01, PG02, RF01, RF02, RF04, RF05, RF07, ST03, ST10, ST11, TQ01"
+      - "targets_templated=True: CV10, JJ01, LT02, LT05, LT12, LT13; template_safe_fixes=True: LT02, LT05"
+      - "Kalıtım: CP02 Rule_CP01'den türer (groups/config_keywords metaclass ile miras, base.py:333-351)"
+      - "Dialekte özel kurallar paket adıyla değil _eval içindeki dialect.name kontrolüyle kısıtlanır (TQ01.py:64, PG01.py:72, OR01.py:46)"
+      - "CP01, CP03, CP04 için Rust _eval_rust yolu var (use_rust_rules)"
+      - "Crawler dağılımı: 68 SegmentSeekerCrawler, 11 RootOnlyCrawler"
+  - id: F3
+    name: templaters
+    interface: "RawTemplater alt sınıfı; name; process/process_with_variants; get_templaters hookimpl"
+    members: "core_templaters (templaters/__init__.py:13): raw, jinja, python, placeholder; eklentiler: dbt (plugins/sqlfluff-templater-dbt), sqlmesh (plugins/sqlfluff-templater-sqlmesh)"
+    representative: "src/sqlfluff/core/templaters/placeholder.py (PlaceholderTemplater, name 78, process 119)"
+    checklist: E3
+    outliers:
+      - "JinjaTemplater PythonTemplater'dan türer ve çoklu varyant üretir (jinja.py:93, :1117)"
+      - "DbtTemplater templates_in_worker=False (ana süreçte manifest gerekir) ve sequence_files'ı override eder (templater.py:179, :462)"
+  - id: F4
+    name: output-formats
+    interface: "LintingResult.as_records() -> list[LintingRecord]; lint komutunda format başına bir dal"
+    members: "FormatType: human, json, yaml, sarif, github-annotation, github-annotation-native, gitlab, none (core/types.py:20)"
+    representative: "gitlab dalı (cli/commands.py:1018): annotation_level -> severity eşlemesi, md5 fingerprint"
+    checklist: E4
+    outliers:
+      - "human formatı serileştirici değil, formatter üzerinden akış halinde yazılır (cli/formatters.py)"
+      - "parse komutu yalnız human/json/yaml/none destekler"
+
+# Büyük repo kuralı: uzun çekirdek modüllerin iç haritası.
+internals:
+  - module: src/sqlfluff/core/linter/linter.py
+    functions:
+      - name: load_raw_file_and_config
+        where: src/sqlfluff/core/linter/linter.py:122
+        decides: "dosya config'i, encoding, bayt sınırı (SQLFluffSkipFile), inline config"
+      - name: render_string
+        where: src/sqlfluff/core/linter/linter.py:921
+        decides: "newline normalizasyonu, dialekt zorunluluğu, templater uyuşmazlık uyarısı, varyant sınırı, ölümcül TMP"
+      - name: _lex_templated_file
+        where: src/sqlfluff/core/linter/linter.py:170
+        decides: "şablon blok girinti dengesi; dengesizse girinti metaları atılır"
+      - name: _parse_tokens
+        where: src/sqlfluff/core/linter/linter.py:228
+        decides: "max_parse_nodes, Rust/Python parser seçimi, SQLParseError -> ağaçsız PRS, unparsable -> PRS"
+      - name: parse_rendered
+        where: src/sqlfluff/core/linter/linter.py:399
+        decides: "her varyant için lex+parse, zamanlamalar -> ParsedString"
+      - name: lint_fix_parsed
+        where: src/sqlfluff/core/linter/linter.py:457
+        decides: "noqa maskesi, main/post fazları, döngü sınırı, fix geçerlilik ve döngü tespiti, templated hata filtresi"
+      - name: lint_parsed
+        where: src/sqlfluff/core/linter/linter.py:711
+        decides: "kök vs alternatif varyantlar, kaynak yama birleşimi, ağaçsız durumda kaynaktan noqa, ignore/warnings işaretleme, tekilleştirme, dialekt uyarısı"
+      - name: lint_paths
+        where: src/sqlfluff/core/linter/linter.py:1141
+        decides: "keşif, runner seçimi, fatal'da durma, dosya başına anında persist (apply_fixes)"
+    flow: "lint_paths -> runner.run -> iter_partials -> render_file(load_raw_file_and_config -> render_string) -> lint_rendered -> parse_rendered(_lex_templated_file, _parse_tokens) -> lint_parsed -> lint_fix_parsed -> BaseRule.crawl / apply_fixes -> LintedFile -> (persist_tree)"
+    change_points:
+      - "Yeni bir lint aşaması (ör. kural sonrası filtre): lint_fix_parsed sonu (linter.py:701) ya da lint_parsed ignore döngüsü (linter.py:841)"
+      - "Yeni parse ön kontrolü: _parse_tokens başı (linter.py:235)"
+      - "Yeni dosya düzeyi atlama koşulu: load_raw_file_and_config (SQLFluffSkipFile) -> runner sayar"
+      - "Fix davranışı: lint_fix_parsed içindeki apply_fixes dalı (linter.py:610-666)"
+  - module: src/sqlfluff/core/rules/base.py
+    functions:
+      - name: RuleMetaclass.__new__
+        where: src/sqlfluff/core/rules/base.py:324
+        decides: "groups/config_keywords mirası, docstring zenginleştirme, kod/açıklama üretimi, ad doğrulama"
+      - name: BaseRule.crawl
+        where: src/sqlfluff/core/rules/base.py:518
+        decides: "Rust yolu, crawler ile bağlam üretimi, _eval istisna yakalama, memory aktarımı"
+      - name: BaseRule._process_lint_result
+        where: src/sqlfluff/core/rules/base.py:709
+        decides: "şablon-güvensiz fix atma, noqa maskesi, unparsable ebeveyn filtresi"
+      - name: RuleSet.rule_reference_map
+        where: src/sqlfluff/core/rules/base.py:1123
+        decides: "code > name > group > alias çakışma çözümü"
+      - name: RuleSet.get_rulepack
+        where: src/sqlfluff/core/rules/base.py:1190
+        decides: "config doğrulama, allow/deny genişletme, sıralı örnekleme, kural config'inin kwargs olarak dağıtımı"
+    flow: "get_ruleset() (core/rules/__init__.py:33) -> hook.get_rules -> RuleSet.register -> get_rulepack(config) -> RulePack(rules, reference_map) -> Linter.lint_fix_parsed -> rule.crawl"
+    change_points:
+      - "Yeni kural niteliği (ör. yeni faz): BaseRule sınıf alanı + lint_fix_parsed faz seçimi (linter.py:514-518)"
+      - "Yeni referans türü: rule_reference_map"
+      - "Yeni kural config doğrulaması: get_configs_info hook'u + _validate_config_options (base.py:1021)"
+  - module: src/sqlfluff/cli/commands.py
+    functions:
+      - name: get_config
+        where: src/sqlfluff/cli/commands.py:505
+        decides: "dialekt ön doğrulama, None olmayan kwargs -> core override, library_path 'none'"
+      - name: lint
+        where: src/sqlfluff/cli/commands.py:718
+        decides: "çıktı akışı, stdin vs yollar, format serileştirme, exit kodu"
+      - name: _handle_unparsable
+        where: src/sqlfluff/cli/commands.py:1130
+        decides: "TMP/PRS'li dosyalarda fix'leri atma ve stderr özeti"
+      - name: _paths_fix / _stdin_fix
+        where: src/sqlfluff/cli/commands.py:1248
+        decides: "anında ya da --check ile toplu persist, düzeltilemeyen sayımı, exit kodu"
+    flow: "cli -> komut -> _apply_quiet_option -> get_config -> get_linter_and_formatter -> set_logging_level -> Linter.lint_paths / lint_string_wrapped -> serileştir -> sys.exit"
+    change_points:
+      - "Komutlar arası ortak bayrak: core_options/lint_options (commands.py:281, :438)"
+      - "Exit kodu politikası: lint sonu (commands.py:1090-1100), _paths_fix sonu (commands.py:1369-1373)"
+
+seams:
+  - id: S1
+    name: dialect-library
+    kind: explicit
+    interface: "Dialect(name, root_segment_name, lexer_matchers, library, sets) + dialect.ref(name) -> Matchable; grammar Ref('X') ile adla geç bağlanır; get_root_segment(); get_lexer_matchers()"
+    where: [src/sqlfluff/core/dialects/base.py:18, src/sqlfluff/core/dialects/base.py:286, src/sqlfluff/core/dialects/base.py:397, src/sqlfluff/core/parser/parser.py:26]
+    note: "Parser motoru dialekt adı bilmez; tüm SQL bilgisi library ve set'lerde"
+  - id: S2
+    name: dialect-registry
+    kind: embedded
+    where: [src/sqlfluff/core/dialects/__init__.py:23, src/sqlfluff/core/dialects/__init__.py:67]
+    note: "Eklenti hook'u yok; dialektler sabit bir sözlükte modül/değişken adıyla listelenir ve import_module ile yüklenir. Yeni dialekt için çekirdek dosyası düzenlenmeli"
+  - id: S3
+    name: templater
+    kind: explicit
+    interface: "class RawTemplater: name; process(*, in_str, fname, config, formatter) -> (TemplatedFile, list[SQLTemplaterError]); process_with_variants(...) -> Iterator[...]; sequence_files(fnames, config, formatter); templates_in_worker: bool; config_subsection"
+    where: [src/sqlfluff/core/templaters/base.py:506, src/sqlfluff/core/templaters/base.py:132, src/sqlfluff/core/config/fluffconfig.py:473]
+    note: "Seçim config `templater` adına göre get_templaters hook'u üzerinden"
+  - id: S4
+    name: rule-plugin
+    kind: explicit
+    interface: "pluggy hook'ları get_rules() -> list[type[BaseRule]], load_default_config() -> dict, get_configs_info() -> dict; BaseRule._eval(context: RuleContext) -> LintResult | list | None; crawl_behaviour: BaseCrawler"
+    where: [src/sqlfluff/core/plugin/hookspecs.py:23, src/sqlfluff/core/rules/__init__.py:17, src/sqlfluff/core/rules/base.py:374]
+  - id: S5
+    name: templater-hook-unspecified
+    kind: embedded
+    where: [src/sqlfluff/core/plugin/hookspecs.py:18-37, src/sqlfluff/core/plugin/lib.py:25]
+    note: "get_templaters hookimpl olarak kullanılıyor (lib.py, dbt eklentisi) ama PluginSpec'te hookspec olarak tanımlı değil; pluggy belirtilmemiş hook olarak çağırıyor"
+  - id: S6
+    name: segment-type-strings
+    kind: embedded
+    where: [src/sqlfluff/core/default_config.cfg:126, src/sqlfluff/utils/reflow/config.py:115, src/sqlfluff/core/rules/noqa.py:177]
+    note: "Kurallar, reflow ve layout config'i segmentlerin `type` dizgelerine (ör. comma, select_statement, inline_comment) bağlıdır; dialektler bu adları korumalı. Dialect.replace tip uyuşmazlığını reddeder (base.py:227)"
+  - id: S7
+    name: dialect-name-in-rules
+    kind: embedded
+    where: [src/sqlfluff/rules/convention/CV11.py:26, src/sqlfluff/rules/references/RF06.py:168, src/sqlfluff/rules/tsql/TQ01.py:64, src/sqlfluff/core/dialects/common.py:203]
+    note: "29 kural/analiz dosyası context.dialect.name ile dialekt adı karşılaştırır (en çok RF01, RF03, AL05, RF05); dialekt kalıtımı burada görülmez, alt dialektler elle listelenir"
+  - id: S8
+    name: formatter
+    kind: explicit
+    interface: "FormatterInterface.dispatch_* (persist_filename, lint_header, file_violations, dialect_warning, template_header, parse_header, processing_header, path), colorize"
+    where: [src/sqlfluff/core/formatter.py:23]
+  - id: S9
+    name: rust-bridge
+    kind: explicit
+    interface: "sqlfluffrs.RsLexer / RustParser(config).parse(tokens, fname, parse_statistics); BaseRule._eval_rust(context) -> Optional[list[LintResult]]"
+    where: [src/sqlfluff/core/parser/lexer.py:911, src/sqlfluff/core/parser/rust_parser.py:190, src/sqlfluff/core/rules/base.py:503]
+    note: "Import başarısızsa sessizce Python'a düşer (lexer.py:975, rust_parser.py:748)"
+  - id: S10
+    name: output-formats
+    kind: embedded
+    where: [src/sqlfluff/core/types.py:20, src/sqlfluff/cli/commands.py:829-1074]
+    note: "Makine çıktı formatları lint komutunun gövdesinde if/elif zinciri; çekirdek yalnızca LintingResult.as_records() sağlar"
+
+extension_points:
+  - id: E1
+    variant: "yeni SQL dialekti"
+    mechanism: "Sabit _dialect_lookup tablosu + dialekt modülünde ebeveynin copy_as ile kopyası; modüldeki BaseSegment alt sınıfları load_raw_dialect'te add_update_segments ile otomatik eklenir/değiştirilir"
+    touch:
+      - where: src/sqlfluff/dialects/dialect_<ad>.py
+        what: "load_raw_dialect('<ebeveyn>').copy_as(...); lexer yamaları (patch_lexer_matchers/insert_lexer_matchers); .replace/.add; aynı adlı segment sınıfları"
+      - where: src/sqlfluff/dialects/dialect_<ad>_keywords.py
+        what: "reserved/unreserved keyword listeleri (update_keywords_set_from_multiline_string)"
+      - where: src/sqlfluff/core/dialects/__init__.py:23
+        what: "'<ad>': ('dialect_<ad>', '<ad>_dialect') girdisi"
+      - where: test/fixtures/dialects/<ad>/
+        what: ".sql + üretilen .yml fixture'ları (test/generate_parse_fixture_yml.py)"
+      - where: sqlfluffrs/tests/fixture_tests.rs:303
+        what: "Rust parite testlerine dialekt fonksiyonları (her dialekt için iki test elle yazılmış)"
+      - where: utils/rustify.py:79
+        what: "Rust dialekt kaynakları dialect_readout ile otomatik üretilir; `python utils/rustify.py build`"
+      - where: src/sqlfluff/rules/convention/CV11.py:26
+        what: "Ebeveyn mysql ise listeye ekle; diğer dialekt-adı kontrolleri için S7'deki dosyaları tara"
+      - where: test/cli/autocomplete_test.py:14
+        what: "Dialekt adı otomatik tamamlama beklentileri harf grubuna göre sabit"
+      - where: README.md:66
+        what: "Desteklenen dialekt listesi (elle)"
+    related_invariants: [INV-16, INV-30, INV-31, INV-41]
+    tests: [test/dialects/dialects_test.py, test/dialects/conftest.py, sqlfluffrs/tests/fixture_tests.rs]
+  - id: E2
+    variant: "yeni lint kuralı (çekirdek paket ya da eklenti)"
+    mechanism: "Sınıf adı Rule_LLNN ya da Rule_Plugin_LLNN regex'iyle kod üretir; açıklama docstring'in ilk satırı; paket __init__'inde get_rules hookimpl'i; entry-point `sqlfluff` grubu"
+    touch:
+      - where: src/sqlfluff/rules/<paket>/<KOD>.py
+        what: "class Rule_<KOD>(BaseRule): docstring (Anti-pattern/Best practice bölümleri), groups ('all' zorunlu), name (küçük harf, noktalı), crawl_behaviour, is_fix_compatible, _eval"
+      - where: src/sqlfluff/rules/<paket>/__init__.py
+        what: "get_rules() listesine ekle; yeni config anahtarı varsa get_configs_info()"
+      - where: src/sqlfluff/core/default_config.cfg:371
+        what: "config_keywords içindeki her anahtar için varsayılan [sqlfluff:rules:<name>] bölümünde olmalı (yoksa init ValueError)"
+      - where: pyproject.toml:119
+        what: "Yalnızca yeni paket için entry-point satırı"
+      - where: test/fixtures/rules/std_rule_cases/<KOD>.yml
+        what: "Kural kodu adlı YAML (rule: <KOD>), pass_str/fail_str/fix_str"
+    related_invariants: [INV-03, INV-20, INV-29, INV-37, INV-39, INV-45, INV-46, INV-57]
+    tests: [test/rules/yaml_test_cases_test.py, test/rules/std_test.py, test/core/rules/rules_test.py]
+  - id: E3
+    variant: "yeni templater"
+    mechanism: "RawTemplater alt sınıfı; get_templaters hookimpl'i (eklenti) ya da core_templaters listesi; config `templater = <name>` ile seçilir"
+    touch:
+      - where: src/sqlfluff/core/templaters/base.py:506
+        what: "name, process (ya da process_with_variants), gerekirse sequence_files ve templates_in_worker=False (ana süreç durumu gerekiyorsa)"
+      - where: src/sqlfluff/core/templaters/__init__.py:13
+        what: "Çekirdek templater ise core_templaters listesine ekle; eklentiyse plugins/<ad>/__init__.py içinde get_templaters"
+      - where: src/sqlfluff/core/config/toml.py:58
+        what: "Context dizileri tipli kalsın isteniyorsa yol listesine ekle (yalnız jinja/python/dbt var)"
+      - where: src/sqlfluff/core/config/file.py:35
+        what: "Context anahtarları _path/_dir ile bitiyorsa yol çözümlemesinden muaf değil (yalnız jinja muaf)"
+      - where: src/sqlfluff/rules/jinja/JJ01.py:132
+        what: "Jinja benzeri ise JinjaTemplater'dan türetmek JJ01'i etkinleştirir"
+    related_invariants: [INV-11, INV-40, INV-47, INV-51]
+    tests: [test/core/templaters/, plugins/sqlfluff-templater-dbt/test/]
+  - id: E4
+    variant: "yeni CLI çıktı formatı"
+    mechanism: "FormatType enum + lint komutunda if/elif serileştirici; LintingResult.as_records() girdisi"
+    touch:
+      - where: src/sqlfluff/core/types.py:20
+        what: "FormatType'a değer ekle (click Choice buradan üretilir)"
+      - where: src/sqlfluff/cli/commands.py:829
+        what: "elif dalı ile file_output üret"
+      - where: src/sqlfluff/cli/commands.py:1693
+        what: "parse komutu yalnızca human/json/yaml/none kabul eder; gerekiyorsa genişlet"
+      - where: src/sqlfluff/cli/outputstream.py:94
+        what: "human dışı formatlarda insan çıktısı devnull'a gider"
+    related_invariants: [INV-18, INV-22]
+    tests: [test/cli/commands_test.py]
+  - id: E5
+    variant: "yeni CLI komutu ya da seçenek"
+    mechanism: "@cli.command() + common_options/core_options/lint_options dekoratörleri; core_options bayrakları **kwargs ile get_config override'larına akar (None olmayanlar)"
+    touch:
+      - where: src/sqlfluff/cli/commands.py:281
+        what: "core_options'a eklenen bayrak adı bir core config anahtarıyla eşleşirse otomatik override olur"
+      - where: src/sqlfluff/cli/commands.py:544
+        what: "override'lar yalnız `core` bölümüne uygulanır (fluffconfig.py:109)"
+      - where: src/sqlfluff/core/default_config.cfg:1
+        what: "Yeni core anahtarının varsayılanı"
+      - where: src/sqlfluff/core/config/validate.py:225
+        what: "Doğrulama gerekiyorsa"
+    related_invariants: [INV-06, INV-17, INV-22, INV-24, INV-56]
+    tests: [test/cli/commands_test.py]
+  - id: E6
+    variant: "yeni ignore/config dosya türü"
+    mechanism: "Config: loader.filename_options listesi (sıra = öncelik); ignore: discovery.ignore_file_loaders sözlüğü"
+    touch:
+      - where: src/sqlfluff/core/config/loader.py:225
+        what: "Dosya adını öncelik sırasına yerleştir"
+      - where: src/sqlfluff/core/config/file.py:38
+        what: "pyproject.toml dışındaki her dosya ini olarak okunur; yeni format için dal ekle"
+      - where: src/sqlfluff/core/linter/discovery.py:109
+        what: "ignore_paths okunacaksa loader ekle"
+    related_invariants: [INV-06, INV-08, INV-09]
+    tests: [test/core/config/loader_test.py, test/core/linter/discovery_test.py]
+  - id: E7
+    variant: "yeni runner / paralellik stratejisi"
+    mechanism: "get_runner processes değerine ve allow_process_parallelism'e göre seçer"
+    touch:
+      - where: src/sqlfluff/core/linter/runner.py:370
+        what: "Seçim mantığı"
+      - where: src/sqlfluff/core/linter/runner.py:35
+        what: "BaseRunner.run(fnames, fix) -> Iterator[LintedFile]; istisnaları _handle_lint_path_exception ile yut"
+    related_invariants: [INV-28, INV-48]
+    tests: [test/core/linter/linter_test.py]
+  - id: E8
+    variant: "Rust tarafına bir kural ya da dialekt değişikliği taşımak"
+    mechanism: "Dialekt tabloları Python'dan üretilir; kural için BaseRule._eval_rust ve core.use_rust_rules (bkz. sqlfluffrs/AGENTS.md)"
+    touch:
+      - where: src/sqlfluff/core/rules/base.py:503
+        what: "_eval_rust override; sonuçlar _process_lint_result ile aynı şekilde işlenir"
+      - where: src/sqlfluff/core/config/fluffconfig.py:191
+        what: "use_rust_rules açık + parser kapalı kombinasyonu hata"
+    related_invariants: [INV-53, INV-54]
+    tests: [test/rules/cp01_rust_dispatch_test.py]
+
+assumptions:
+  - id: A1
+    assumes: "SQL dosyaları uzantıyla tanınır (.sql,.sql.j2,.dml,.ddl,.pkb); karşılaştırma küçük harfe çevrilmiş endswith"
+    where: [src/sqlfluff/core/default_config.cfg:53, src/sqlfluff/core/linter/discovery.py:138]
+    affects: "Uzantısı eşleşmeyen açık dosya yolları sessizce atlanır (INV-21)"
+  - id: A2
+    assumes: "Ignore/config dosya adları sabit: .sqlfluffignore, .sqlfluff, pyproject.toml, setup.cfg, tox.ini, pep8.ini"
+    where: [src/sqlfluff/core/linter/discovery.py:109, src/sqlfluff/core/config/loader.py:225]
+    affects: "Config ve ignore keşfi"
+  - id: A3
+    assumes: "ini bölümleri `sqlfluff` ya da `sqlfluff:` ile başlar; toml'da tool.sqlfluff; kök bölüm `core` olarak yeniden adlandırılır"
+    where: [src/sqlfluff/core/config/ini.py:67, src/sqlfluff/core/config/toml.py:122]
+    affects: "Diğer bölümler yok sayılır"
+  - id: A4
+    assumes: "Dosya içi config ve noqa SQL `--` satır yorumu sözdizimini kullanır"
+    where: [src/sqlfluff/core/config/fluffconfig.py:780, src/sqlfluff/core/rules/noqa.py:77]
+    affects: "`#` yorumlu dialektlerde inline config çalışmaz (noqa ağaçtan comment segmentleriyle okunur)"
+  - id: A5
+    assumes: "Templater adları config yükleyicisine gömülü: jinja/python/dbt context dizileri tipli, yalnız jinja context yol çözümlemesinden muaf"
+    where: [src/sqlfluff/core/config/toml.py:58-64, src/sqlfluff/core/config/file.py:35]
+    affects: "Yeni templater context'lerinin tipi ve yol çözümlemesi"
+  - id: A6
+    assumes: "Adı `_path` / `_dir` ile biten ya da load_macros_from_path/loader_search_path/exclude_macros_from_path olan anahtarlar dosya yoludur"
+    where: [src/sqlfluff/core/config/file.py:27-32, src/sqlfluff/core/config/file.py:98-104]
+    affects: "Değer config dosyasının dizinine göre glob ile çözülür"
+  - id: A7
+    assumes: "Dialekt adı dizgeleri ve dialekt aileleri kurallarda elle kodlanmış"
+    where: [src/sqlfluff/rules/convention/CV11.py:26, src/sqlfluff/rules/references/RF06.py:277, src/sqlfluff/rules/postgres/PG01.py:72, src/sqlfluff/rules/oracle/OR01.py:46]
+    affects: "Türetilmiş yeni dialekt ebeveyninin kural davranışını otomatik almaz"
+  - id: A8
+    assumes: "BigQuery'nin nokta içeren tanımlayıcıları referans parçalarına bölünür (yalnızca bigquery adına göre)"
+    where: [src/sqlfluff/core/dialects/common.py:203, src/sqlfluff/core/dialects/common.py:296]
+    affects: "RF/AL kurallarının referans çözümlemesi"
+  - id: A9
+    assumes: "Hata kodları sabit: TMP, LXR, PRS, NOQA; kategori adları templating/lexing/parsing/linting/noqa"
+    where: [src/sqlfluff/core/errors.py:168, src/sqlfluff/core/errors.py:187, src/sqlfluff/core/errors.py:214, src/sqlfluff/core/errors.py:432]
+    affects: "--ignore, warnings, noqa ve disable_noqa_except (linter.py:888 PRS/LXR/TMP özel listesi)"
+  - id: A10
+    assumes: "Kök segment adı dialekt tanımında verilir (ansi: FileSegment); dosya kökü BaseFileSegment alt sınıfıdır ve root_parse'a sahiptir"
+    where: [src/sqlfluff/dialects/dialect_ansi.py:74, src/sqlfluff/core/parser/segments/file.py:44]
+    affects: "Parse girişi"
+  - id: A11
+    assumes: "Lexer'ın son çare matcher'ı boşluk dışı her şeyi `unlexable` yapar; lexer whitespace matcher'ını adıyla (whitespace) tanır"
+    where: [src/sqlfluff/core/parser/lexer.py:757-761, src/sqlfluff/core/parser/lexer.py:610]
+    affects: "LXR ihlalleri; dialekt lexer'ında `whitespace` adı korunmalı"
+  - id: A12
+    assumes: "Kullanıcı config dizini: önce ~/.config/sqlfluff, macOS'ta sonra XDG unix yolu, sonra platformdirs macOS yolu"
+    where: [src/sqlfluff/core/config/loader.py:66-104]
+    affects: "appdir config katmanı"
+  - id: A13
+    assumes: "dbt templater adı çekirdekte özel mesajla biliniyor"
+    where: [src/sqlfluff/core/config/fluffconfig.py:500]
+    affects: "Eksik templater uyarısı"
+  - id: A14
+    assumes: "discovery'nin working_path varsayılanı modül import anındaki os.getcwd()"
+    where: [src/sqlfluff/core/linter/discovery.py:249]
+    affects: "Import sonrası cwd değişirse dış ignore dosyası araması eski cwd'ye göre yapılır (guess)"
+  - id: A15
+    assumes: "Reflow motoru bazı SQL segment türlerini adıyla bilir (comma, binary_operator, statement_terminator, start_bracket/end_bracket)"
+    where: [src/sqlfluff/utils/reflow/sequence.py:620, src/sqlfluff/utils/reflow/reindent.py:1613, src/sqlfluff/utils/reflow/reindent.py:920]
+    affects: "Layout kurallarının dialektler arası davranışı"
+
+invariants:
+  # --- sıralama ve karşılaştırma ---
+  - id: INV-01
+    category: sorting
+    statement: "Dizin taramasında dosyalar Python dizge sırasıyla (kod noktası; rakam < büyük harf < '_' < küçük harf) işlenir ve raporlanır; doğal sayı sıralaması yoktur"
+    evidence: [src/sqlfluff/core/linter/discovery.py:302]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-02
+    category: sorting
+    statement: "Bir dosyanın ihlalleri (satır, konum) ile; serileştirilmiş kayıtlar (satır, konum, kod) ile sıralanır"
+    evidence: [src/sqlfluff/core/linter/linted_file.py:120, src/sqlfluff/core/linter/linted_dir.py:75]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-03
+    category: sorting
+    statement: "Seçilen kurallar kod alfabetik sırasıyla örneklenir ve bu sırayla çalışır; fix sonucu bu sıraya bağlıdır"
+    evidence: [src/sqlfluff/core/rules/base.py:1283, src/sqlfluff/core/linter/linter.py:543]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-04
+    category: sorting
+    statement: "Aynı kaynak konum ve açıklamaya sahip ihlaller (şablon döngüleri, varyantlar) tek ihlale indirgenir"
+    evidence: [src/sqlfluff/core/linter/linted_file.py:96, src/sqlfluff/core/errors.py:133]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-05
+    category: sorting
+    statement: "Kural referansları ve noqa kural adları büyük/küçük harf duyarlıdır; `lt01` LT01'i seçmez/bastırmaz"
+    evidence: [src/sqlfluff/core/rules/base.py:1112, src/sqlfluff/core/rules/noqa.py:122]
+    test: null
+    confidence: verified
+    documented: no
+  # --- config ---
+  - id: INV-06
+    category: config
+    statement: "Katman önceliği (sonraki ezer): eklenti varsayılanları < appdir < ~ < ~ ile hedef arasındaki ebeveynler < cwd'den dosya dizinine kadar < --config dosyası < CLI override'ları < dosya içi `-- sqlfluff:` direktifleri"
+    evidence: [src/sqlfluff/core/config/loader.py:355-361, src/sqlfluff/core/config/fluffconfig.py:125, src/sqlfluff/core/config/fluffconfig.py:752]
+    test: test/core/config/fluffconfig_test.py::test__process_inline_config
+    confidence: read
+    documented: no
+  - id: INV-07
+    category: config
+    statement: "Dosya içi `-- sqlfluff:dialect:X` CLI'deki --dialect değerini ezer"
+    evidence: [src/sqlfluff/core/config/fluffconfig.py:752-757]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-08
+    category: config
+    statement: "Aynı dizinde birden çok config varsa öncelik setup.cfg < tox.ini < pep8.ini < .sqlfluff < pyproject.toml"
+    evidence: [src/sqlfluff/core/config/loader.py:225-231]
+    test: test/core/config/loader_test.py
+    confidence: read
+    documented: yes
+  - id: INV-09
+    category: config
+    statement: "--ignore-local-config yalnız ev/appdir'i değil cwd ve proje dizinlerindeki config'leri de atlar; yalnız varsayılanlar, --config ve CLI kalır"
+    evidence: [src/sqlfluff/core/config/loader.py:297-325]
+    test: test/cli/commands_test.py::test__cli__command_lint_ignore_local_config
+    confidence: verified
+    documented: contradicts
+  - id: INV-10
+    category: config
+    statement: "Dosya içi config satırı tam satır başında `-- sqlfluff` ya da `--sqlfluff` ile başlamalı; girintili satır sessizce yok sayılır"
+    evidence: [src/sqlfluff/core/config/fluffconfig.py:780]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-11
+    category: config
+    statement: "`templater` alt dizin config'inde değiştirilemez; uyarı verilir ve kök templater kullanılır"
+    evidence: [src/sqlfluff/core/linter/linter.py:939-948]
+    test: test/core/linter/linter_test.py::test__attempt_to_change_templater_warning
+    confidence: verified
+    documented: yes
+  - id: INV-12
+    category: config
+    statement: "sql_file_exts yalnızca kök (cwd) config'inden okunur; alt dizin config'leri dosya keşfini etkilemez"
+    evidence: [src/sqlfluff/core/linter/linter.py:1162, src/sqlfluff/core/default_config.cfg:52]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-13
+    category: config
+    statement: "ini config anahtarları büyük/küçük harf duyarlı okunur; anahtar adındaki `.` iç içe sözlüğe bölünür; değerler int > float > true/false/none > dizge sırasıyla çevrilir"
+    evidence: [src/sqlfluff/core/config/ini.py:59, src/sqlfluff/core/config/ini.py:88, src/sqlfluff/core/config/ini.py:12-32]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-14
+    category: config
+    statement: "Bilinmeyen config anahtarları hata vermez; yalnız kaldırılmış anahtarlar, layout, indentation ve birkaç sayısal sınır doğrulanır; bilinmeyen kural bölümü yalnız uyarı üretir"
+    evidence: [src/sqlfluff/core/config/validate.py:225-250, src/sqlfluff/core/rules/base.py:1223]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-15
+    category: config
+    statement: "`_path`/`_dir` sonekli anahtarlar config dosyasının dizinine göre glob ile çözülür; eşleşme yoksa ham değer kalır; jinja context bölümü muaf, python/placeholder context muaf değil"
+    evidence: [src/sqlfluff/core/config/file.py:76-104]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-16
+    category: config
+    statement: "Hiçbir katmanda dialekt yoksa lint/fix/parse SQLFluffUserError verir ve bütün çalışma exit 2 ile biter"
+    evidence: [src/sqlfluff/core/config/fluffconfig.py:170-189, src/sqlfluff/core/linter/linter.py:939, src/sqlfluff/cli/commands.py:243-251]
+    test: null
+    confidence: verified
+    documented: yes
+  # --- CLI ---
+  - id: INV-17
+    category: cli
+    statement: "Çıkış kodları: 0 = filtrelenmiş ihlal yok, 1 = ihlal var, 2 = kullanıcı/config hatası (bilinmeyen dialekt, var olmayan yol, -q ile -v, format --rules)"
+    evidence: [src/sqlfluff/cli/__init__.py:3-5, src/sqlfluff/core/linter/linting_result.py:119, src/sqlfluff/cli/commands.py:251]
+    test: test/cli/commands_test.py::test__cli__command_lint_parse_with_retcode
+    confidence: verified
+    documented: yes
+  - id: INV-18
+    category: cli
+    statement: "`warnings` ile uyarıya çevrilen ihlaller çıktıda WARNING olarak görünür, makine kayıtlarında warning:true ile yer alır ama çıkış kodunu etkilemez"
+    evidence: [src/sqlfluff/core/linter/linted_dir.py:73, src/sqlfluff/core/linter/linted_dir.py:116]
+    test: test/cli/commands_test.py::test__cli__command_lint_warning
+    confidence: verified
+    documented: yes
+  - id: INV-19
+    category: cli
+    statement: "Bilinmeyen kural referansı (--rules ZZ99) yalnızca uyarı verir; hiçbir kural çalışmaz ve çıkış 0 olur"
+    evidence: [src/sqlfluff/core/rules/base.py:1260-1270]
+    test: test/core/config/fluffconfig_test.py::test__config__warn_unknown_rule
+    confidence: verified
+    documented: no
+  - id: INV-20
+    category: cli
+    statement: "Kural seçimi: öncelik code > name > group > alias; tam eşleşme yoksa fnmatch glob; denylist (exclude_rules) allowlist'i ezer"
+    evidence: [src/sqlfluff/core/rules/base.py:1099-1121, src/sqlfluff/core/rules/base.py:1123, src/sqlfluff/core/rules/base.py:1291]
+    test: test/core/rules/rules_test.py
+    confidence: read
+    documented: yes
+  - id: INV-21
+    category: cli
+    statement: "Uzantısı sql_file_exts'e uymayan açık dosya yolu sessizce atlanır (0 dosya, exit 0); var olmayan yol exit 2"
+    evidence: [src/sqlfluff/core/linter/discovery.py:155-156, src/sqlfluff/core/linter/discovery.py:268-274]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-22
+    category: cli
+    statement: "Log/uyarılar insan formatında stdout'a; makine formatında, --write-output'ta ya da stdin fix'te stderr'e gider; `User Error` stderr'e, `Unknown dialect` ve `--quiet` hatası stdout'a yazılır"
+    evidence: [src/sqlfluff/cli/commands.py:193, src/sqlfluff/cli/commands.py:765, src/sqlfluff/cli/commands.py:243-251, src/sqlfluff/cli/commands.py:527-534, src/sqlfluff/cli/commands.py:497-501]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-23
+    category: cli
+    statement: "`fix -` stdout'a yalnızca SQL yazar (düzeltilebilir ihlal yoksa girdi aynen); durum mesajları devnull'a, uyarılar stderr'e"
+    evidence: [src/sqlfluff/cli/commands.py:1472-1474, src/sqlfluff/cli/commands.py:1217-1244]
+    test: test/cli/commands_test.py::test__cli__command_format_stdin
+    confidence: verified
+    documented: no
+  - id: INV-24
+    category: cli
+    statement: "`format` --rules kabul etmez (exit 2), sabit kural kümesini (capitalisation, layout ve 7 seçili kural) kullanır, exclude_rules'a uyar ve fix_even_unparsable'ı her zaman False kabul eder"
+    evidence: [src/sqlfluff/cli/commands.py:1584-1601, src/sqlfluff/cli/commands.py:1640, src/sqlfluff/cli/commands.py:1648]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-25
+    category: cli
+    statement: "--nofail lint ve parse için çıkışı her zaman 0 yapar"
+    evidence: [src/sqlfluff/cli/commands.py:1090-1100, src/sqlfluff/cli/commands.py:1869-1872]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-26
+    category: cli
+    statement: "fix --check tüm dosyaları analiz edip onay ister; y/Enter uygular, n -> exit 1, diğer tuş -> exit 1"
+    evidence: [src/sqlfluff/cli/commands.py:1305-1328]
+    test: test/cli/commands_test.py::test__cli__fix_multiple_errors_quiet_check
+    confidence: read
+    documented: yes
+  - id: INV-27
+    category: cli
+    statement: "Aynı ayrıştırılamayan girdi ve --ignore parsing için `fix -` exit 0, `fix dosya.sql` exit 1 verir (stdin unfixable sayımını fix'ler atılmadan önce yapar)"
+    evidence: [src/sqlfluff/cli/commands.py:1213-1215, src/sqlfluff/cli/commands.py:1335-1341, src/sqlfluff/core/linter/linted_dir.py:238-241]
+    test: null
+    confidence: verified
+    documented: no
+  # --- hatalar ve kapsam ---
+  - id: INV-28
+    category: errors
+    statement: "Bir dosyada beklenmeyen iç hata uyarı olarak loglanır, dosya sonuçtan düşer ve çalışma devam eder; çıkış kodu diğer dosyalara göre (0 olabilir). IOError yeniden fırlatılır"
+    evidence: [src/sqlfluff/core/linter/runner.py:100-109, src/sqlfluff/core/linter/runner.py:133-136]
+    test: test/core/linter/linter_test.py::test__linter__linting_unexpected_error_handled_gracefully
+    confidence: verified
+    documented: contradicts
+  - id: INV-29
+    category: errors
+    statement: "Kural _eval istisnası, kural koduyla `Unexpected exception` açıklamalı fix'siz bir ihlale dönüşür; o kural o dosyada durur, diğer kurallar ve dosyalar devam eder"
+    evidence: [src/sqlfluff/core/rules/base.py:624-653]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-30
+    category: errors
+    statement: "Ayrıştırılamayan kod parse'ı durdurmaz (UnparsableSegment + PRS); ama parse sırasında fırlatılan SQLParseError (kapanmayan parantez, max_parse_depth, max_parse_nodes) ağacı yok eder ve o dosyada hiçbir kural çalışmaz"
+    evidence: [src/sqlfluff/core/parser/segments/file.py:96-116, src/sqlfluff/core/linter/linter.py:294-306, src/sqlfluff/core/linter/linter.py:236-246]
+    test: test/dialects/unparsable_test.py
+    confidence: verified
+    documented: no
+  - id: INV-31
+    category: errors
+    statement: "Parser hiçbir token düşürmez; parse sonucu ham metni girdiyle aynıdır (aksi halde istisna)"
+    evidence: [src/sqlfluff/core/parser/parser.py:56, src/sqlfluff/core/parser/helpers.py:16]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-32
+    category: errors
+    statement: "Bir dosyada fatal ihlal varsa sonraki dosyaların lintlenmesi durdurulur"
+    evidence: [src/sqlfluff/core/linter/linter.py:1213-1215]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-33
+    category: errors
+    statement: "large_file_skip_byte_limit (20000) üstündeki dosyalar uyarıyla atlanır, ihlal sayılmaz; large_file_skip_fail=True ise exit en az 1"
+    evidence: [src/sqlfluff/core/linter/linter.py:128-155, src/sqlfluff/core/linter/runner.py:56-58, src/sqlfluff/cli/commands.py:1096]
+    test: test/core/linter/linter_test.py::test__linter__large_file_skip_fail_config
+    confidence: read
+    documented: yes
+  # --- güvenlik ---
+  - id: INV-34
+    category: safety
+    statement: "CLI fix, filtrelenmemiş TMP/PRS hatası olan dosyaya yazmaz; --ignore parsing ya da noqa bunu açmaz, yalnız --FIX-EVEN-UNPARSABLE / fix_even_unparsable açar"
+    evidence: [src/sqlfluff/core/linter/linter.py:1219-1226, src/sqlfluff/core/linter/linted_dir.py:228-246, src/sqlfluff/cli/commands.py:1148-1150]
+    test: test/cli/commands_test.py::test_cli_fix_even_unparsable
+    confidence: verified
+    documented: yes
+  - id: INV-35
+    category: safety
+    statement: "Dosya yalnızca en az bir düzeltilebilir ihlal varsa ve içerik değiştiyse yazılır; önce aynı dizinde geçici dosya, sonra move; izin bitleri korunur; hata halinde geçici dosya silinir"
+    evidence: [src/sqlfluff/core/linter/linted_file.py:394-405, src/sqlfluff/core/linter/linted_file.py:419-466]
+    test: test/core/linter/linted_file_test.py::test_safe_create_replace_file_cleans_up_on_failure
+    confidence: read
+    documented: no
+  - id: INV-36
+    category: safety
+    statement: "--fixed-suffix X ile çıktı `<kök>X<uzantı>` dosyasına yazılır, orijinal değişmez"
+    evidence: [src/sqlfluff/core/linter/linted_file.py:400-402]
+    test: null
+    confidence: verified
+    documented: yes
+  - id: INV-37
+    category: safety
+    statement: "Fix döngüsü runaway_limit'e (10) ulaşırsa tüm fix'ler atılır, orijinal ağaç döner, ihlaller düzeltilemez sayılır (fix exit 1)"
+    evidence: [src/sqlfluff/core/linter/linter.py:673-699]
+    test: test/core/rules/rules_test.py::test__rules__runaway_fail_catch
+    confidence: read
+    documented: no
+  - id: INV-38
+    category: safety
+    statement: "Bir kuralın fix'i dosyayı ayrıştırılamaz yaparsa, daha önce görülmüş bir duruma döndürürse ya da aynı fix'ler art arda gelirse uygulanmaz"
+    evidence: [src/sqlfluff/core/linter/linter.py:597-605, src/sqlfluff/core/linter/linter.py:637-657]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-39
+    category: safety
+    statement: "template_safe_fixes olmayan kuralların şablon kesitlerine dokunan fix'leri atılır; şablonlu alanlardaki lint hataları varsayılan olarak raporlanmaz (targets_templated kurallar hariç)"
+    evidence: [src/sqlfluff/core/rules/base.py:720-721, src/sqlfluff/core/linter/linter.py:341-365, src/sqlfluff/core/linter/linter.py:701-702]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-40
+    category: safety
+    statement: "Jinja şablonları SandboxedEnvironment'ta render edilir; fakat library_path altındaki Python modülleri import edilir (config ile kod çalıştırılabilir)"
+    evidence: [src/sqlfluff/core/templaters/jinja.py:476, src/sqlfluff/core/templaters/jinja.py:319-345]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-41
+    category: safety
+    statement: "max_parse_depth (600) ve max_parse_nodes (100000) aşılınca dosya PRS ile başarısız olur; 0 sınırı kapatır"
+    evidence: [src/sqlfluff/core/parser/context.py:266-271, src/sqlfluff/core/linter/linter.py:236-246, src/sqlfluff/core/default_config.cfg:5-7]
+    test: test/core/config/validate_test.py::test__validate_max_parse_depth_valid
+    confidence: read
+    documented: yes
+  # --- varsayılanlar ve kodlama ---
+  - id: INV-42
+    category: defaults
+    statement: "Satır sonları templating öncesi \\n'e normalize edilir; fix uygulanan CRLF dosya tamamen LF olarak yazılır"
+    evidence: [src/sqlfluff/core/linter/linter.py:165-167, src/sqlfluff/core/linter/linter.py:933, src/sqlfluff/core/linter/linted_file.py:446]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-43
+    category: defaults
+    statement: "Dosyalar errors='backslashreplace' ile okunur; yanlış --encoding verilirse fix çözülemeyen baytları literal `\\xNN` metni olarak geri yazar ve exit 0 döner"
+    evidence: [src/sqlfluff/core/linter/linter.py:157]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-44
+    category: defaults
+    statement: "encoding=autodetect: BOM -> utf-32/utf-16/utf-8-sig, tüm baytlar <128 -> ascii, değilse chardet, bulunamazsa utf-8"
+    evidence: [src/sqlfluff/core/helpers/file.py:12-33]
+    test: test/core/helpers/file_test.py::test__parser__helper_get_encoding
+    confidence: read
+    documented: no
+  - id: INV-45
+    category: defaults
+    statement: "lint ve fix yalnız ilk geçişte bulunan ihlalleri raporlar; fix'lerin yarattığı yeni ihlaller raporlanmaz; fix modunda ilk geçişten sonra is_fix_compatible olmayan kurallar atlanır"
+    evidence: [src/sqlfluff/core/linter/linter.py:468-472, src/sqlfluff/core/linter/linter.py:549-554, src/sqlfluff/core/linter/linter.py:573-574]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-46
+    category: defaults
+    statement: "lint_phase='post' kuralları (CP01-CP05, LT12, LT13) fix modunda ana döngüden sonra en fazla iki kez çalışır; lint modunda tek geçiş"
+    evidence: [src/sqlfluff/core/linter/linter.py:500-525]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-47
+    category: defaults
+    statement: "En fazla render_variant_limit (5) şablon varyantı lintlenir; kök varyant parse edilebiliyorsa diğer varyantların lex/parse hataları raporlanmaz ama lint ihlalleri raporlanır"
+    evidence: [src/sqlfluff/core/linter/linter.py:964-966, src/sqlfluff/core/linter/linter.py:732-743, src/sqlfluff/core/linter/linter.py:778-797]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-48
+    category: defaults
+    statement: "processes <= 0 ise cpu_sayısı + processes (en az 1); tek dosyada her zaman 1 süreç"
+    evidence: [src/sqlfluff/core/linter/runner.py:388-389, src/sqlfluff/core/linter/linter.py:1182-1183]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-49
+    category: defaults
+    statement: "noqa sözdizimi: satır `-- noqa`, `-- noqa: A,B`, `-- noqa: disable=...|all`, `enable=`; kurallar glob ile genişler, eşleşmeyen ad (PRS/TMP gibi) aynen kalır; `noqa` sonrası `:` yoksa PRS ihlali"
+    evidence: [src/sqlfluff/core/rules/noqa.py:65-140]
+    test: test/core/rules/noqa_test.py::test_parse_noqa
+    confidence: verified
+    documented: yes
+  # --- ayar etkileşimleri ---
+  - id: INV-50
+    category: interaction
+    statement: "--ignore yalnızca templating/lexing/parsing/linting/noqa kategori adlarıyla eşleşir; tanınmayan değer sessizce etkisizdir"
+    evidence: [src/sqlfluff/core/errors.py:137-140, src/sqlfluff/core/linter/linter.py:842]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-51
+    category: interaction
+    statement: "ignore=templating yalnız hataları gizlemez, jinja'nın eksik makro dosyalarına sahte içerik vermesini de sağlar (render çıktısı değişir)"
+    evidence: [src/sqlfluff/core/templaters/jinja.py:448-475]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-52
+    category: interaction
+    statement: "disable_noqa_except, disable_noqa'dan önceliklidir (yalnız listelenen kuralların noqa'ları geçerli kalır)"
+    evidence: [src/sqlfluff/core/linter/linter.py:490-497, src/sqlfluff/core/linter/linter.py:879-898]
+    test: test/cli/commands_test.py::test_cli_disable_noqa_except_flag
+    confidence: read
+    documented: yes
+  - id: INV-53
+    category: interaction
+    statement: "use_rust_rules açık (True) ve use_rust_parser kapalıyken config SQLFluffUserError verir; 'auto' hiçbir zaman hata vermez"
+    evidence: [src/sqlfluff/core/config/fluffconfig.py:191-225]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-54
+    category: interaction
+    statement: "Rust lexer, sqlfluffrs kuruluysa use_rust_parser değerinden bağımsız olarak import anında seçilir"
+    evidence: [src/sqlfluff/core/parser/lexer.py:910-990, src/sqlfluff/core/parser/__init__.py:62]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-55
+    category: interaction
+    statement: "Python API fix(), filtrelenmiş TMP/PRS sayısını kullanır: ignore=parsing ile ayrıştırılamayan dosyayı düzeltir (CLI düzeltmez); ağaç hiç yoksa AssertionError fırlatır"
+    evidence: [src/sqlfluff/api/simple.py:153-165, src/sqlfluff/core/linter/linted_file.py:213-215]
+    test: null
+    confidence: verified
+    documented: no
+  - id: INV-56
+    category: interaction
+    statement: "CLI override'ları yalnız `core` bölümüne uygulanır ve çocuk config'lere aktarılır; kural ya da templater bölümleri CLI'den ayarlanamaz (--library-path hariç)"
+    evidence: [src/sqlfluff/core/config/fluffconfig.py:107-113, src/sqlfluff/core/config/fluffconfig.py:515-538]
+    test: null
+    confidence: read
+    documented: yes
+  - id: INV-57
+    category: other
+    statement: "Kural config_keywords'teki her anahtar config'te bulunmalıdır; yoksa RulePack kurulurken ValueError (koşu düzeyinde)"
+    evidence: [src/sqlfluff/core/rules/base.py:442-452]
+    test: null
+    confidence: read
+    documented: no
+  - id: INV-58
+    category: other
+    statement: "Yüklenemeyen eklenti hata olarak loglanır ve atlanır; çalışma devam eder"
+    evidence: [src/sqlfluff/core/plugin/host.py:68-78]
+    test: test/core/plugin_test.py
+    confidence: read
+    documented: no
+
+config:
+  sources:
+    - "eklenti varsayılanları: load_default_config hook'u (çekirdek: src/sqlfluff/core/default_config.cfg)"
+    - "appdir: ~/.config/sqlfluff ya da platform yolu (loader.py:51)"
+    - "ev dizini ~"
+    - "~ ile hedef yol arasındaki ebeveyn dizinler"
+    - "cwd'den hedef dosyanın dizinine kadar her dizin"
+    - "--config ile verilen ek dosya"
+    - "CLI override'ları (yalnız core)"
+    - "dosya içi `-- sqlfluff:` satırları"
+  discovery: "Her dizinde setup.cfg, tox.ini, pep8.ini, .sqlfluff, pyproject.toml aranır (loader.py:225). Hedef cwd dışındaysa ortak ebeveyn yoldan başlanır (helpers/file.py:36-97). Sonuçlar yol bazında önbelleklenir (functools.cache)."
+  precedence: "nested_combine ile sonra gelen ezer (loader.py:355); override'lar FluffConfig.__init__'te en son (fluffconfig.py:125); inline direktifler set_value ile bunların da üstüne yazar (fluffconfig.py:752). --ignore-local-config ev, appdir, ebeveyn ve proje katmanlarını kapatır."
+  keys:
+    - key: dialect
+      type: str|None
+      default: None
+      applies_to: "lexer/parser grammar seçimi; zorunlu"
+      where: src/sqlfluff/core/default_config.cfg:14
+    - key: templater
+      type: str
+      default: jinja
+      applies_to: "templater seçimi; yalnız kök config'te etkili"
+      where: src/sqlfluff/core/default_config.cfg:16
+    - key: rules
+      type: csv
+      default: all
+      applies_to: "kural allowlist (kod/ad/grup/alias/glob)"
+      where: src/sqlfluff/core/default_config.cfg:18
+    - key: exclude_rules
+      type: csv
+      default: None
+      applies_to: "kural denylist; allowlist'i ezer"
+      where: src/sqlfluff/core/default_config.cfg:20
+    - key: max_parse_depth
+      type: int
+      default: 600
+      applies_to: "parse derinlik sınırı (0 kapatır)"
+      where: src/sqlfluff/core/default_config.cfg:5
+    - key: max_parse_nodes
+      type: int
+      default: 100000
+      applies_to: "token/düğüm sınırı (0 kapatır)"
+      where: src/sqlfluff/core/default_config.cfg:7
+    - key: verbose
+      type: int
+      default: 0
+      applies_to: "log ayrıntısı; CLI -v sayısı"
+      where: src/sqlfluff/core/default_config.cfg:9
+    - key: output_line_length
+      type: int
+      default: 80
+      applies_to: "CLI insan çıktısı satır genişliği"
+      where: src/sqlfluff/core/default_config.cfg:22
+    - key: runaway_limit
+      type: int
+      default: 10
+      applies_to: "fix ana döngü sınırı (>=1)"
+      where: src/sqlfluff/core/default_config.cfg:24
+    - key: ignore
+      type: csv
+      default: None
+      applies_to: "ihlal kategorileri: lexing, linting, parsing, templating"
+      where: src/sqlfluff/core/default_config.cfg:34
+    - key: warnings
+      type: csv
+      default: None
+      applies_to: "uyarıya çevrilecek kural kodları (TMP/PRS dahil)"
+      where: src/sqlfluff/core/default_config.cfg:37
+    - key: warn_unused_ignores
+      type: bool
+      default: False
+      applies_to: "kullanılmayan noqa için NOQA uyarısı"
+      where: src/sqlfluff/core/default_config.cfg:39
+    - key: ignore_templated_areas
+      type: bool
+      default: True
+      applies_to: "şablonlu alandaki lint hatalarını bastırma"
+      where: src/sqlfluff/core/default_config.cfg:43
+    - key: encoding
+      type: str
+      default: autodetect
+      applies_to: "okuma/yazma kodlaması"
+      where: src/sqlfluff/core/default_config.cfg:45
+    - key: disable_noqa
+      type: bool
+      default: False
+      applies_to: "inline noqa'ları yok say"
+      where: src/sqlfluff/core/default_config.cfg:47
+    - key: disable_noqa_except
+      type: csv
+      default: None
+      applies_to: "yalnız listelenen noqa'lar geçerli"
+      where: src/sqlfluff/core/default_config.cfg:50
+    - key: sql_file_exts
+      type: csv
+      default: ".sql,.sql.j2,.dml,.ddl,.pkb"
+      applies_to: "dosya keşfi; yalnız kök config"
+      where: src/sqlfluff/core/default_config.cfg:53
+    - key: fix_even_unparsable
+      type: bool
+      default: False
+      applies_to: "TMP/PRS olan dosyaları da düzelt (format bunu yok sayar)"
+      where: src/sqlfluff/core/default_config.cfg:56
+    - key: large_file_skip_char_limit
+      type: int
+      default: 0
+      applies_to: "kullanımdan kalkıyor; karakter sınırı (templater process'inde)"
+      where: src/sqlfluff/core/default_config.cfg:63
+    - key: large_file_skip_byte_limit
+      type: int
+      default: 20000
+      applies_to: "dosya bayt sınırı; aşan dosya atlanır"
+      where: src/sqlfluff/core/default_config.cfg:64
+    - key: large_file_skip_fail
+      type: bool
+      default: False
+      applies_to: "atlanan dosya varsa exit >= 1"
+      where: src/sqlfluff/core/default_config.cfg:69
+    - key: processes
+      type: int
+      default: 1
+      applies_to: "paralellik; <=0 göreli cpu"
+      where: src/sqlfluff/core/default_config.cfg:74
+    - key: max_line_length
+      type: int
+      default: 80
+      applies_to: "LT05 ve reflow; <=0 kapatır"
+      where: src/sqlfluff/core/default_config.cfg:78
+    - key: render_variant_limit
+      type: int
+      default: 5
+      applies_to: "şablon varyant sayısı (>=1)"
+      where: src/sqlfluff/core/default_config.cfg:84
+    - key: use_rust_parser
+      type: "auto|bool"
+      default: auto
+      applies_to: "Rust parser kullanımı (kuruluysa)"
+      where: src/sqlfluff/core/default_config.cfg:89
+    - key: use_rust_rules
+      type: "auto|bool"
+      default: False
+      applies_to: "Rust-native kural tespiti (CP01/CP03/CP04)"
+      where: src/sqlfluff/core/default_config.cfg:94
+    - key: "indentation:*"
+      type: mixed
+      default: "indent_unit=space, tab_space_size=4, implicit_indents=forbid, template_blocks_indent=True, ..."
+      applies_to: "reflow girinti ve lexer şablon blok metası"
+      where: src/sqlfluff/core/default_config.cfg:96
+    - key: "layout:type:<segment_type>:*"
+      type: mixed
+      default: "62 segment türü için spacing_before/after, line_position"
+      applies_to: "reflow (LT kuralları); anahtarlar segment `type` adları"
+      where: src/sqlfluff/core/default_config.cfg:126
+    - key: "templater:jinja:*"
+      type: mixed
+      default: "apply_dbt_builtins=True"
+      applies_to: "jinja context, macros, library_path, load_macros_from_path, delimiters"
+      where: src/sqlfluff/core/default_config.cfg:367
+    - key: "rules:*"
+      type: mixed
+      default: "allow_scalar=True, single_table_references=consistent, unquoted_identifiers_policy=all"
+      applies_to: "tüm kurallara dağıtılan genel kural ayarları; [rules:<name>] kurala özel"
+      where: src/sqlfluff/core/default_config.cfg:371
+
+cli:
+  flags:
+    - flag: "-d/--dialect"
+      what: "dialekt override; önce dialect_selector ile doğrulanır"
+      where: src/sqlfluff/cli/commands.py:292
+    - flag: "-t/--templater"
+      what: "templater override; seçenekler eklentilerden tembel üretilir"
+      where: src/sqlfluff/cli/commands.py:306
+    - flag: "-r/--rules, -e/--exclude-rules"
+      what: "allowlist/denylist"
+      where: src/sqlfluff/cli/commands.py:323
+    - flag: "--config"
+      what: "ek config dosyası (yalnız dosya; dizin ya da yok -> exit 2)"
+      where: src/sqlfluff/cli/commands.py:348
+    - flag: "--ignore-local-config"
+      what: "varsayılan arama yollarındaki config'leri atla (INV-09)"
+      where: src/sqlfluff/cli/commands.py:360
+    - flag: "--encoding"
+      what: "okuma/yazma kodlaması"
+      where: src/sqlfluff/cli/commands.py:370
+    - flag: "-i/--ignore"
+      what: "kategori bazlı ihlal görmezden gelme"
+      where: src/sqlfluff/cli/commands.py:379
+    - flag: "--disable-noqa, --disable-noqa-except"
+      what: "inline noqa denetimi"
+      where: src/sqlfluff/cli/commands.py:404
+    - flag: "--library-path"
+      what: "jinja library_path override; 'none' -> None"
+      where: src/sqlfluff/cli/commands.py:415
+    - flag: "--stdin-filename"
+      what: "stdin girdisi için config ve ignore'u bu yola göre çöz"
+      where: src/sqlfluff/cli/commands.py:425
+    - flag: "-q/--quiet"
+      what: "durum çıktısını kapat; -v ile birlikte exit 2"
+      where: src/sqlfluff/cli/commands.py:445
+    - flag: "-p/--processes"
+      what: "paralel süreç sayısı"
+      where: src/sqlfluff/cli/commands.py:455
+    - flag: "--persist-timing"
+      what: "zamanlamaları csv'ye yaz (beta)"
+      where: src/sqlfluff/cli/commands.py:470
+    - flag: "--warn-unused-ignores"
+      what: "kullanılmayan noqa uyarısı"
+      where: src/sqlfluff/cli/commands.py:480
+    - flag: "--disregard-sqlfluffignores"
+      what: "ignore dosyalarını yükleme"
+      where: src/sqlfluff/cli/commands.py:486
+    - flag: "-f/--format (lint)"
+      what: "human, json, yaml, sarif, github-annotation, github-annotation-native, gitlab, none"
+      where: src/sqlfluff/cli/commands.py:678
+    - flag: "--write-output"
+      what: "makine/insan çıktısını dosyaya yaz; loglar stderr'e"
+      where: src/sqlfluff/cli/commands.py:685
+    - flag: "--annotation-level"
+      what: "github/gitlab seviye; warning ihlalleri her zaman notice/info"
+      where: src/sqlfluff/cli/commands.py:693
+    - flag: "--nofail"
+      what: "lint/parse exit 0"
+      where: src/sqlfluff/cli/commands.py:704
+    - flag: "--recursion-limit"
+      what: "Python recursion limiti"
+      where: src/sqlfluff/cli/commands.py:712
+    - flag: "--check (fix)"
+      what: "sonda topluca onaylı uygulama"
+      where: src/sqlfluff/cli/commands.py:1392
+    - flag: "-x/--fixed-suffix (fix, format)"
+      what: "çıktıyı sonekli yeni dosyaya yaz"
+      where: src/sqlfluff/cli/commands.py:1402
+    - flag: "--FIX-EVEN-UNPARSABLE (fix)"
+      what: "TMP/PRS'li dosyaları da düzelt"
+      where: src/sqlfluff/cli/commands.py:1407
+    - flag: "--show-lint-violations (fix)"
+      what: "düzeltilemeyen ihlalleri listele"
+      where: src/sqlfluff/cli/commands.py:1420
+    - flag: "-f/--force (fix)"
+      what: "kullanımdan kalktı; yalnız stderr uyarısı"
+      where: src/sqlfluff/cli/commands.py:1380
+    - flag: "-c/--code-only, -m/--include-meta (parse)"
+      what: "parse ağacı çıktı filtresi / meta ve konumlar"
+      where: src/sqlfluff/cli/commands.py:1677
+  exit_codes:
+    0: "başarı; filtrelenmiş ihlal yok (uyarılar, ignore edilenler ve dosya içi iç hatalar dahil edilmez)"
+    1: "ihlal bulundu; ya da fix'te düzeltilemeyen ihlal / TMP-PRS / --check'te ret / atlanan dosya + large_file_skip_fail"
+    2: "kullanıcı hatası: dialekt yok/bilinmiyor, var olmayan yol, geçersiz --config, -q ile -v, format --rules, geçersiz config değeri"
+  io: "Girdi: yol(lar) ya da `-` ile stdin (lint/fix/format/parse/render). Ana sonuç: insan formatında stdout (TqdmOutput), makine formatında stdout ya da --write-output dosyası; makine formatında insan çıktısı devnull. Loglar human'da stdout, aksi halde stderr. fix yerinde (ya da sonekli dosyaya) geçici dosya üzerinden yazar; stdin fix yalnızca SQL'i stdout'a yazar. parse/render dosya yazmaz."
+
+doc_discrepancies:
+  - doc: docs/source/production/cli_use.rst:18-20
+    says: "Exit 2, örneğin SQLFluff içindeki bir iç hata anlamına gelir"
+    code: src/sqlfluff/core/linter/runner.py:100-109
+    actually: "Dosya işlenirken oluşan iç hata yalnızca uyarı loglar ve dosyayı atlar; diğer dosyalar temizse çıkış 0 (gözlemlendi)"
+  - doc: src/sqlfluff/cli/commands.py:688
+    says: "--write-output: bir çıktı dosyası belirlemek normal stdout loglamasını yeniden açar"
+    code: src/sqlfluff/cli/commands.py:765
+    actually: "--write-output verilince non_human_output=True olur ve loglar stderr'e gider; gözlemde stdout tamamen boştu"
+  - doc: docs/source/configuration/ignoring_configuration.rst:114
+    says: "Hata kategorileri --ignore ya da .sqlfluffignore içindeki `ignore` ayarıyla yok sayılabilir"
+    code: src/sqlfluff/core/linter/discovery.py:68-73
+    actually: ".sqlfluffignore yalnız gitignore desenleri olarak okunur; `ignore` bir config (.sqlfluff vb.) anahtarıdır"
+  - doc: docs/source/configuration/ignoring_configuration.rst:88-91
+    says: "ignore_paths pyproject.toml'un [tool.sqlfluff.core] bölümünde kullanılabilir"
+    code: src/sqlfluff/core/linter/discovery.py:109-113
+    actually: "ignore_paths .sqlfluff dosyasının [sqlfluff] bölümünden de okunur (belgelenmemiş); setup.cfg/tox.ini'den okunmaz"
+  - doc: src/sqlfluff/core/config/loader.py:286
+    says: "ignore_local_config yalnız ev dizini (~) ve appdir config'ini atlar"
+    code: src/sqlfluff/core/config/loader.py:306-325
+    actually: "Ebeveyn dizinler ve cwd->dosya dizini config'leri de atlanır (cwd'deki .sqlfluff yok sayıldı, gözlemlendi). Aynı docstring fluffconfig.py:63, :293, :400'de tekrar eder"
+  - doc: docs/source/configuration/setting_configuration.rst:146-148
+    says: "macOS ve Unix'te kullanıcı config dizini ~/.config/sqlfluff"
+    code: src/sqlfluff/core/config/loader.py:66-104
+    actually: "~/.config/sqlfluff yoksa macOS'ta XDG unix yolu, o da yoksa platformdirs macOS yolu (~/Library/Application Support/...) kullanılır"
+  - doc: docs/source/configuration/setting_configuration.rst:8-9
+    says: "Şablonlama config'i yalnız dosya ile yapılabilir"
+    code: src/sqlfluff/cli/commands.py:415
+    actually: "--library-path CLI bayrağı jinja library_path'i override eder"
+  - doc: src/sqlfluff/core/default_config.cfg:8
+    says: "verbose 0-2 arası bir tamsayı"
+    code: src/sqlfluff/cli/commands.py:213-228
+    actually: "Log seviyeleri verbosity 3, 4 ve >4 için ayrıca değişir"
+  - doc: src/sqlfluff/core/default_config.cfg:15
+    says: "templater [raw|jinja|python|placeholder] değerlerinden biri"
+    code: src/sqlfluff/core/config/fluffconfig.py:473-510
+    actually: "get_templaters hook'u ile gelen eklenti templater'ları (dbt, sqlmesh) da geçerli"
+  - doc: AGENTS.md:135
+    says: "Yeni kural için metadata olarak `code`, `name`, `description`, `groups` tanımla"
+    code: src/sqlfluff/core/rules/base.py:201-211
+    actually: "code sınıf adından (Rule_XXNN) ve description docstring'in ilk satırından metaclass tarafından üretilir ve üzerine yazılır; elle tanımlanan değerler kullanılmaz"
+  - doc: AGENTS.md:137
+    says: "YAML test vakaları test/fixtures/rules/std_rule_cases/<category>.yml dosyasına eklenir (test/AGENTS.md:230, :441 aynı)"
+    code: test/rules/yaml_test_cases_test.py:22
+    actually: "Dosyalar kural kodu adlıdır (AL01.yml, AL02_LT01.yml); kategori adlı dosya yok; hangi kural olduğu `rule:` anahtarından okunur"
+  - doc: src/sqlfluff/AGENTS.md:245
+    says: "FluffConfig.from_root() varsayılan dialekti 'ansi' döner"
+    code: src/sqlfluff/core/default_config.cfg:14
+    actually: "Varsayılan dialect None; from_root() require_dialect=True iken dialekt yoksa SQLFluffUserError verir"
+
+unknowns:
+  - question: "--library-path none override'ı gerçekten jinja library_path'i kapatıyor mu? Kod `config.get('library_path') or <templater bölümü>` yapıyor; None override bölüm değerine düşebilir. CLI testi (test/cli/commands_test.py:740) kapatıldığını varsayıyor"
+    where: [src/sqlfluff/core/templaters/jinja.py:319-321, src/sqlfluff/cli/commands.py:547-550]
+  - question: "RawTemplater.__eq__ isinstance kullandığı için kök templater python iken jinja config'i eşit sayılıp alt dizin uyarısı atlanabilir mi? (guess)"
+    where: [src/sqlfluff/core/templaters/base.py:599-604, src/sqlfluff/core/linter/linter.py:939]
+  - question: "fix iki kez çalıştırıldığında idempotent mi? Kod döngü tespiti yapıyor ama genel bir garanti/test görülmedi"
+    where: [src/sqlfluff/core/linter/linter.py:476, test/rules/std_roundtrip_test.py]
+  - question: "Rust parser yolunda (sqlfluffrs kurulu) yukarıdaki gözlemlerin aynısı geçerli mi? Gözlemler sqlfluffrs olmadan (pure Python) yapıldı"
+    where: [src/sqlfluff/core/linter/linter.py:256-285]
+  - question: "Windows'ta fnmatch normcase nedeniyle kural glob'ları büyük/küçük harf duyarsız olabilir mi? (guess)"
+    where: [src/sqlfluff/core/rules/base.py:1118]
+  - question: "MultiProcessRunner'da templates_in_worker=True iken iç hata ve SQLFluffSkipFile sayımının sequential ile aynı olup olmadığı incelenmedi"
+    where: [src/sqlfluff/core/linter/runner.py:150-286]
+  - question: "İncelenmedi: tek tek dialekt grammar'ları, 79 kuralın iç mantığı, templaters/slicers/tracer.py jinja kesit izleme ayrıntısı, utils/reflow/reindent.py iç algoritması, sqlfluffrs crate'lerinin içi, dbt/sqlmesh eklentilerinin iç mantığı"
+    where: [src/sqlfluff/dialects/, src/sqlfluff/rules/, src/sqlfluff/core/templaters/slicers/tracer.py, src/sqlfluff/utils/reflow/reindent.py, sqlfluffrs/]

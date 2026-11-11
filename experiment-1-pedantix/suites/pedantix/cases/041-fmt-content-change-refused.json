@@ -1,0 +1,14 @@
+{
+  "id": "fmt-content-change-refused",
+  "feature": "formatter.safety",
+  "desc": "A base formatter that changes content is refused",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"sh\", \"-c\", \"cat >/dev/null; printf '{ zzz = 9; }\\\\n'\"]"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

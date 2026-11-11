@@ -1,0 +1,21 @@
+{
+  "id": "cfg-xdg-global",
+  "feature": "config.discovery",
+  "desc": "Without a local config, $XDG_CONFIG_HOME/pedantix/pedantix.toml is used",
+  "args": [
+    "{tmp}/proj/f.nix"
+  ],
+  "dirs": [
+    "proj/.git"
+  ],
+  "env": {
+    "XDG_CONFIG_HOME": "{tmp}/xdg"
+  },
+  "files": {
+    "xdg/pedantix/pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "proj/f.nix": "{ a = 1; c = 2; b = 3; }\n"
+  },
+  "watch_files": [
+    "proj/f.nix"
+  ]
+}

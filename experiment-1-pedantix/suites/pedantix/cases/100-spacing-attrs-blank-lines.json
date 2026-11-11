@@ -1,0 +1,11 @@
+{
+  "id": "spacing-attrs-blank-lines",
+  "feature": "spacing",
+  "desc": "[attrs] blank-lines applies at any depth",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nblank-lines = 1\nblank-lines-mode = \"all\""
+  ],
+  "stdin": "{\n  a = {\n    y = 1;\n    x = 2;\n  };\n  b = 3;\n}\n",
+  "idempotent": true
+}

@@ -1,0 +1,11 @@
+{
+  "id": "attrs-nested",
+  "feature": "sort.attrs",
+  "desc": "Nested sets are sorted at every level",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  b = {\n    z = 1;\n    y = 2;\n  };\n  a = 1;\n}\n",
+  "idempotent": true
+}

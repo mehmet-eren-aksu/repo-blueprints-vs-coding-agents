@@ -1,0 +1,16 @@
+{
+  "id": "spacing-non-flake",
+  "feature": "spacing",
+  "desc": "The same input as module.nix is not spaced",
+  "args": [
+    "--stdin-filepath",
+    "{tmp}/module.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\ntop-level-blank-lines = 1\n"
+  },
+  "stdin": "{\n  outputs =\n    { self }:\n    {\n      p = 1;\n      q = {\n        r = 2;\n      };\n    };\n}\n"
+}

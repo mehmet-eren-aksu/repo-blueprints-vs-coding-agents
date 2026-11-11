@@ -1,0 +1,11 @@
+{
+  "id": "g2-check-file-dirty",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 1,
+  "stdout": "",
+  "files": {
+    "dirty.json": "{\"b\": 1, \"a\": 2}\n"
+  }
+}

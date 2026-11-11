@@ -1,0 +1,9 @@
+{
+  "id": "overrides-double-star",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = 2; b = 1; programs.git.settings.alias = { c = \"commit\"; a = \"add\"; }; z.settings.alias = { y = 1; x = 2; }; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

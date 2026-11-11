@@ -1,0 +1,16 @@
+{
+  "id": "g3-lists-sort",
+  "feature": "g3.arrays",
+  "desc": "[lists] sort = true sorts arrays of strings",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[lists]\nsort = true",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"xs\": [\"b\", \"a\", \"c\"]}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

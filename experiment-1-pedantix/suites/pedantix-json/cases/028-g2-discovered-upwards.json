@@ -1,0 +1,23 @@
+{
+  "id": "g2-discovered-upwards",
+  "feature": "g2.discovery",
+  "desc": "The config is searched upwards to the repo root",
+  "args": [
+    "{tmp}/a/b/data.json"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "a/b/data.json": "{\"a\": 1, \"c\": 2, \"b\": 3}\n"
+  },
+  "watch_files": [
+    "a/b/data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

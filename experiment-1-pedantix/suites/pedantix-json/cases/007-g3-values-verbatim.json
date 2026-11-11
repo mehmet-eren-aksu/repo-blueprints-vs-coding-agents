@@ -1,0 +1,16 @@
+{
+  "id": "g3-values-verbatim",
+  "feature": "g3.values",
+  "desc": "Numbers and strings are kept exactly as written",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"z\": 1.0, \"y\": 1e10, \"x\": 12345678901234567890, \"w\": -0, \"v\": \"caf\\u00e9\\n\", \"u\": true, \"t\": null, \"s\": \"tab\\there\"}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

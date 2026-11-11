@@ -1,0 +1,21 @@
+{
+  "id": "cfg-warning-ignored-key",
+  "feature": "config.warnings",
+  "desc": "A key with no effect warns but still formats",
+  "args": [
+    "{tmp}/f.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[lets]\nmerge = true\n",
+    "f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ],
+  "stderr_contains": [
+    "lets.merge"
+  ]
+}

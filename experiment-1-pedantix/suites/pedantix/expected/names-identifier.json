@@ -1,0 +1,9 @@
+{
+  "id": "names-identifier",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  \"if\" = false;\n  kebab-case = true;\n  \"not valid\" = false;\n  valid = true;\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

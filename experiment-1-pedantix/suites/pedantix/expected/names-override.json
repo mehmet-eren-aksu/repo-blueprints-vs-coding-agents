@@ -1,0 +1,9 @@
+{
+  "id": "names-override",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  users.users.\"bob\".isNormalUser = true;\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

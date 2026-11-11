@@ -1,0 +1,9 @@
+{
+  "id": "g3-lists-sort",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"xs\": [\n    \"a\",\n    \"b\",\n    \"c\"\n  ]\n}\n",
+  "files": {}
+}

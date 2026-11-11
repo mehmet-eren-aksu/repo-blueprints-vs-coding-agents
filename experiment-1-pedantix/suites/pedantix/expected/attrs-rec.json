@@ -1,0 +1,9 @@
+{
+  "id": "attrs-rec",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "rec { a = 1; b = a; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

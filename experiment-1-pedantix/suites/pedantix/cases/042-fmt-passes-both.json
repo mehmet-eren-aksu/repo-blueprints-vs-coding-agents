@@ -1,0 +1,10 @@
+{
+  "id": "fmt-passes-both",
+  "feature": "formatter",
+  "desc": "Formatter runs before and after sorting by default",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"sed\", \"s/$/ /\"]"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

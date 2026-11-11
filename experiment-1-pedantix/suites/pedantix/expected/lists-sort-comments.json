@@ -1,0 +1,9 @@
+{
+  "id": "lists-sort-comments",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "[\n  a # ay\n  # bee\n  b\n  c\n]\n",
+  "files": {},
+  "stderr_sample": ""
+}

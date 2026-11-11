@@ -1,0 +1,26 @@
+{
+  "id": "g2-files-pattern-discovered",
+  "feature": "g2.discovery",
+  "desc": "[[files]] in a discovered config select .json files",
+  "args": [
+    "{tmp}/data.json",
+    "{tmp}/deps.lock.json"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[[files]]\npattern = \"*.lock.json\"\nattrs.sort = false\n",
+    "data.json": "{\"b\": 1, \"a\": 2}\n",
+    "deps.lock.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "data.json",
+    "deps.lock.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

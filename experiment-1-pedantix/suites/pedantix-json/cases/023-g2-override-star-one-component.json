@@ -1,0 +1,16 @@
+{
+  "id": "g2-override-star-one-component",
+  "feature": "g2.overrides",
+  "desc": "'*' matches exactly one path component",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"services.*\"\nattrs.first = [\"description\"]",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"services\": {\"foo\": {\"z\": 1, \"description\": \"d\", \"a\": 2, \"nested\": {\"description\": \"x\", \"b\": 1}}}}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

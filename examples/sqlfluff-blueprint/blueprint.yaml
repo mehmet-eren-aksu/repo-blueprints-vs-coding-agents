@@ -1,0 +1,12 @@
+format: blueprint/0.2
+repo: sqlfluff/sqlfluff (yerel klasör: extract)
+commit: 6f90535e9691e170056f5d84b126afab8c32f2b0
+extracted_at: 2026-11-11
+extracted_by: claude-opus-5-5
+code_lines: 172290
+languages:
+  python: 148476   # src/ + plugins/ (testler hariç); bunun 94176 satırı src/sqlfluff/dialects/
+  rust: 23814      # sqlfluffrs/ (tests/ hariç; üretilen dialekt dosyaları repoda yok)
+notes:
+  - "Gözlemler .venv içindeki editable kurulumla (sqlfluff 4.4.0, Python 3.12.7) yapıldı; sqlfluffrs import edilemedi, yani tüm gözlemler pure-Python yolunda."
+  - "Büyük repo kuralları uygulandı: README <= 400 satır, map.yaml <= 2500 satır; dialektler ve kurallar aile olarak haritalandı."

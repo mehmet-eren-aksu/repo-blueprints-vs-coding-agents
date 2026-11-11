@@ -1,0 +1,10 @@
+[
+  "args-sort-false",
+  "attrs-sort-false",
+  "attrs-sort-false-with-first",
+  "cli-files-already-clean",
+  "cli-on-parse-error-skip",
+  "cli-version",
+  "lists-default-unsorted",
+  "spacing-non-flake"
+]

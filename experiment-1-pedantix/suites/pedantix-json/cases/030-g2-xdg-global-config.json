@@ -1,0 +1,26 @@
+{
+  "id": "g2-xdg-global-config",
+  "feature": "g2.discovery",
+  "desc": "$XDG_CONFIG_HOME/pedantix/pedantix.toml applies to JSON",
+  "args": [
+    "{tmp}/proj/data.json"
+  ],
+  "dirs": [
+    "proj/.git"
+  ],
+  "env": {
+    "XDG_CONFIG_HOME": "{tmp}/xdg"
+  },
+  "files": {
+    "xdg/pedantix/pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "proj/data.json": "{\"a\": 1, \"c\": 2, \"b\": 3}\n"
+  },
+  "watch_files": [
+    "proj/data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "attrs-case-sensitive",
+  "feature": "sort.attrs",
+  "desc": "Upper and lower case names",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ b = 1; B = 2; a = 3; A = 4; _c = 5; }\n",
+  "idempotent": true
+}

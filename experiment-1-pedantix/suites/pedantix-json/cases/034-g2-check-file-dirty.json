@@ -1,0 +1,27 @@
+{
+  "id": "g2-check-file-dirty",
+  "feature": "g2.cli",
+  "desc": "--check on an unsorted .json file: exit 1, file untouched, file named",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--check",
+    "{tmp}/dirty.json"
+  ],
+  "files": {
+    "dirty.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "dirty.json"
+  ],
+  "exact_files": [
+    "dirty.json"
+  ],
+  "stderr_contains": [
+    "dirty.json"
+  ],
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

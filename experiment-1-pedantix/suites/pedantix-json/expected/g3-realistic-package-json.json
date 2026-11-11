@@ -1,0 +1,11 @@
+{
+  "id": "g3-realistic-package-json",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "package.json": "{\n  \"name\": \"my-app\",\n  \"version\": \"0.4.1\",\n  \"description\": \"demo\",\n  \"private\": true,\n  \"dependencies\": {\n    \"axios\": \"^1.7.2\",\n    \"react\": \"^18.3.1\",\n    \"zod\": \"^3.23.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"^5.5.0\",\n    \"vitest\": \"^2.0.0\"\n  },\n  \"files\": [\n    \"dist\",\n    \"README.md\",\n    \"LICENSE\"\n  ],\n  \"scripts\": {\n    \"test\": \"vitest\",\n    \"build\": \"tsc\",\n    \"dev\": \"vite\"\n  }\n}\n"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "fmt-failing-command",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: base formatter (before sort): base formatter `false` exited with exit status: 1:\n\n"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "cfg-set-overrides",
+  "feature": "config.set",
+  "desc": "--set changes one key on top of the loaded config",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--set",
+    "lets.sort=false"
+  ],
+  "stdin": "let\n  b = 1;\n  a = 2;\nin\n{ y = a; x = b; }\n"
+}

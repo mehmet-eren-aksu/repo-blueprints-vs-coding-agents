@@ -1,0 +1,21 @@
+{
+  "id": "g3-file-in-place",
+  "feature": "g3.io",
+  "desc": "A .json file is rewritten in place",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/data.json"
+  ],
+  "files": {
+    "data.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "cli-missing-file",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: cannot read {tmp}/nope.nix: No such file or directory (os error 2)\n"
+}

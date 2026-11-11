@@ -1,0 +1,12 @@
+{
+  "id": "cfg-set-array",
+  "feature": "config.set",
+  "desc": "--set values are parsed as TOML",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--set",
+    "attrs.first=[\"z\"]"
+  ],
+  "stdin": "{ a = 1; z = 2; m = 3; }\n"
+}

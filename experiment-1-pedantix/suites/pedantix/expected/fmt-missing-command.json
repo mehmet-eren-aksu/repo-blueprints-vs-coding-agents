@@ -1,0 +1,9 @@
+{
+  "id": "fmt-missing-command",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: base formatter (before sort): failed to run base formatter `pedantix-missing-base-formatter` (is it on PATH? set `formatter = \"off\"` in pedantix.toml to only reorder): No such file or directory (os error 2)\n"
+}

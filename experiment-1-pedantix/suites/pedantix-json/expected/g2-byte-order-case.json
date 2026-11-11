@@ -1,0 +1,9 @@
+{
+  "id": "g2-byte-order-case",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"A\": 4,\n  \"B\": 2,\n  \"_c\": 5,\n  \"a\": 3,\n  \"b\": 1\n}\n",
+  "files": {}
+}

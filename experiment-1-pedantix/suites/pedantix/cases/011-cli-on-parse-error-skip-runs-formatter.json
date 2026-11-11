@@ -1,0 +1,10 @@
+{
+  "id": "cli-on-parse-error-skip-runs-formatter",
+  "feature": "cli.errors",
+  "desc": "With skip, only the base formatter runs",
+  "args": [
+    "--config-toml",
+    "on-parse-error = \"skip\"\nformatter-command = [\"tr\", \"a-z\", \"A-Z\"]\nformat-before-sort = false"
+  ],
+  "stdin": "{ b = [ 1 2 ] |> f; a = 1; }\n"
+}

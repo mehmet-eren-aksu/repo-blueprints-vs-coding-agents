@@ -1,0 +1,20 @@
+{
+  "id": "cfg-config-toml-disables-discovery",
+  "feature": "config.discovery",
+  "desc": "--config-toml ignores pedantix.toml files",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/f.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nsort = false\n",
+    "f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

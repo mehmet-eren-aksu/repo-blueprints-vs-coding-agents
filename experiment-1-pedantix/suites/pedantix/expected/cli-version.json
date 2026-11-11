@@ -1,0 +1,9 @@
+{
+  "id": "cli-version",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "pedantix 1.2.2\n",
+  "files": {},
+  "stderr_sample": ""
+}

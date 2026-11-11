@@ -1,0 +1,11 @@
+{
+  "id": "inherit-names-sorted",
+  "feature": "sort.inherits",
+  "desc": "Names inside inherit are sorted",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[inherits]\nsort = true"
+  ],
+  "stdin": "{ inherit (pkgs) c a b; z = 1; }\n",
+  "idempotent": true
+}

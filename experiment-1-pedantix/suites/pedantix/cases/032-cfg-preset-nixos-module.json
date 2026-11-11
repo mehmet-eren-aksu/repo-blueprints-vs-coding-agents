@@ -1,0 +1,10 @@
+{
+  "id": "cfg-preset-nixos-module",
+  "feature": "config.presets",
+  "desc": "preset = nixos-module orders module arguments",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\npreset = \"nixos-module\""
+  ],
+  "stdin": "{ pkgs, lib, config, ... }:\n{ b = 1; a = 2; }\n"
+}

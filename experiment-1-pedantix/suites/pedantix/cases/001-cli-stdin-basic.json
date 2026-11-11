@@ -1,0 +1,11 @@
+{
+  "id": "cli-stdin-basic",
+  "feature": "cli.io",
+  "desc": "No files: read stdin, write the result to stdout",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ b = 1; a = 2; }\n",
+  "idempotent": true
+}

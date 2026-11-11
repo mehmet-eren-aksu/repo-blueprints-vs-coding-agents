@@ -1,0 +1,9 @@
+{
+  "id": "attrs-quoted-names",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ \"A\" = 4; a = 2; \"b\" = 1; \"c d\" = 3; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

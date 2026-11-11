@@ -1,0 +1,11 @@
+{
+  "id": "lets-sort-true",
+  "feature": "sort.lets",
+  "desc": "lets.sort = true",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[lets]\nsort = true"
+  ],
+  "stdin": "let\n  c = 3;\n  b = 1;\n  a = 2;\nin\na + b + c\n",
+  "idempotent": true
+}

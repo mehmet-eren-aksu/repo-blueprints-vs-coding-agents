@@ -1,0 +1,11 @@
+{
+  "id": "spacing-depth-2",
+  "feature": "spacing",
+  "desc": "top-level-blank-lines-depth = 2",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ntop-level-blank-lines = 1\ntop-level-blank-lines-depth = 2\ntop-level-blank-lines-mode = \"all\""
+  ],
+  "stdin": "{\n  a = {\n    y = 1;\n    x = 2;\n  };\n  b = 3;\n}\n",
+  "idempotent": true
+}

@@ -1,0 +1,23 @@
+{
+  "id": "g2-discovered-config",
+  "feature": "g2.discovery",
+  "desc": "A pedantix.toml next to the .json file is used",
+  "args": [
+    "{tmp}/data.json"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "data.json": "{\"a\": 1, \"c\": 2, \"b\": 3}\n"
+  },
+  "watch_files": [
+    "data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

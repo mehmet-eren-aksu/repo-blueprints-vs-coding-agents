@@ -1,0 +1,11 @@
+{
+  "id": "args-basic",
+  "feature": "sort.args",
+  "desc": "Function arguments are sorted",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ pkgs, lib, config }:\nlib\n",
+  "idempotent": true
+}

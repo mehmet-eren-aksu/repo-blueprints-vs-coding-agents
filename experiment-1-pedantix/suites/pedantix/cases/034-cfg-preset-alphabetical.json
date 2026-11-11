@@ -1,0 +1,10 @@
+{
+  "id": "cfg-preset-alphabetical",
+  "feature": "config.presets",
+  "desc": "preset = alphabetical",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\npreset = \"alphabetical\""
+  ],
+  "stdin": "{ pkgs, lib, ... }:\n{ imports = [ ]; b = 1; enable = true; a = 2; }\n"
+}

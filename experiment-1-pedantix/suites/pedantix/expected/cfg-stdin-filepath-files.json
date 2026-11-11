@@ -1,0 +1,9 @@
+{
+  "id": "cfg-stdin-filepath-files",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ b = 3; c = 2; a = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

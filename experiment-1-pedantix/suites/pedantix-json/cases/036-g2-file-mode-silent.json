@@ -1,0 +1,21 @@
+{
+  "id": "g2-file-mode-silent",
+  "feature": "g2.cli",
+  "desc": "File mode prints nothing on stdout",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/data.json"
+  ],
+  "files": {
+    "data.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

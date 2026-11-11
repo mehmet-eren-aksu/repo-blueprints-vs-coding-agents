@@ -1,0 +1,11 @@
+{
+  "id": "args-multiline-comments",
+  "feature": "sort.args",
+  "desc": "Multi-line formals with comments",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  pkgs,\n  # the library\n  lib,\n  config, # cfg\n  ...\n}:\n{ }\n",
+  "idempotent": true
+}

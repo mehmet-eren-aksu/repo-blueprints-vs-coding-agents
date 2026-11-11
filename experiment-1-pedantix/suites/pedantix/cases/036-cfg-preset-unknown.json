@@ -1,0 +1,14 @@
+{
+  "id": "cfg-preset-unknown",
+  "feature": "config.errors",
+  "desc": "An unknown preset is an error",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\npreset = \"nope\""
+  ],
+  "stdin": "{ a = 1; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

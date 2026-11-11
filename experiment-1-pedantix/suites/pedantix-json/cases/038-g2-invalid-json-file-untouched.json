@@ -1,0 +1,23 @@
+{
+  "id": "g2-invalid-json-file-untouched",
+  "feature": "g2.errors",
+  "desc": "An invalid .json file is not modified",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/bad.json"
+  ],
+  "files": {
+    "bad.json": "{\"b\": 1, \"a\": }\n"
+  },
+  "watch_files": [
+    "bad.json"
+  ],
+  "exact_files": [
+    "bad.json"
+  ],
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "args-sort-false",
+  "feature": "sort.args",
+  "desc": "args.sort = false",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[args]\nsort = false"
+  ],
+  "stdin": "{ pkgs, lib }:\nlib\n"
+}

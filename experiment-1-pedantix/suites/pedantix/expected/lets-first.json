@@ -1,0 +1,9 @@
+{
+  "id": "lets-first",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "let\n  cfg = 2;\n  a = 3;\n  b = 1;\nin\nb\n",
+  "files": {},
+  "stderr_sample": ""
+}

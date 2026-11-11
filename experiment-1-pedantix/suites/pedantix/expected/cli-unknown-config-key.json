@@ -1,0 +1,9 @@
+{
+  "id": "cli-unknown-config-key",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: invalid configuration (--config-toml plus --set options): unknown field `colour`, expected one of `sort`, `first`, `last`, `merge`, `flatten`, `name-style`, `blank-lines`, `blank-lines-mode`, `blank-lines-depth`\nin `attrs`\n\n"
+}

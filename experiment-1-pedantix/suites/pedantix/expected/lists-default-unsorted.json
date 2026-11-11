@@ -1,0 +1,9 @@
+{
+  "id": "lists-default-unsorted",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ xs = [ \"b\" \"a\" \"c\" ]; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

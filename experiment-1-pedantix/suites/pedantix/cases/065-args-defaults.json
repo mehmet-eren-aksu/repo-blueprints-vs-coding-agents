@@ -1,0 +1,11 @@
+{
+  "id": "args-defaults",
+  "feature": "sort.args",
+  "desc": "Arguments with defaults",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ z ? 1, pkgs, a ? null, lib, ... }:\nlib\n",
+  "idempotent": true
+}

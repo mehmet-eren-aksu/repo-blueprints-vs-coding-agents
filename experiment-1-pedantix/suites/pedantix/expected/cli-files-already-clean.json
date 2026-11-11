@@ -1,0 +1,11 @@
+{
+  "id": "cli-files-already-clean",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "f.nix": "{ a = 1; b = 2; }\n"
+  },
+  "stderr_sample": ""
+}

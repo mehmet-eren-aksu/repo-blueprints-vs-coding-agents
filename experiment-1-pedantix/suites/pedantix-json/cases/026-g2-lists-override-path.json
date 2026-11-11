@@ -1,0 +1,16 @@
+{
+  "id": "g2-lists-override-path",
+  "feature": "g2.overrides",
+  "desc": "lists.sort for one path only",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**.files\"\nlists.sort = true",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"files\": [\"b\", \"a\"], \"other\": [\"d\", \"c\"]}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

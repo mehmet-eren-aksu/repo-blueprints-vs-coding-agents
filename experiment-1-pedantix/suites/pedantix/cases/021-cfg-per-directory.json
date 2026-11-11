@@ -1,0 +1,23 @@
+{
+  "id": "cfg-per-directory",
+  "feature": "config.discovery",
+  "desc": "Each directory uses its own discovered config",
+  "args": [
+    "{tmp}/a/f.nix",
+    "{tmp}/b/f.nix"
+  ],
+  "dirs": [
+    "a/.git",
+    "b/.git"
+  ],
+  "files": {
+    "a/pedantix.toml": "formatter = \"off\"\n",
+    "b/pedantix.toml": "formatter = \"off\"\n[attrs]\nsort = false\n",
+    "a/f.nix": "{ b = 1; a = 2; }\n",
+    "b/f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "a/f.nix",
+    "b/f.nix"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "inherit-placement-last",
+  "feature": "sort.inherits",
+  "desc": "inherit-placement = last",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ninherit-placement = \"last\""
+  ],
+  "stdin": "{ z = 1; inherit b; a = 2; }\n"
+}

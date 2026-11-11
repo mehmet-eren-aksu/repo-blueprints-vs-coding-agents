@@ -1,0 +1,9 @@
+{
+  "id": "overrides-star-one-component",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ systemd.services.foo = { description = \"d\"; wantedBy = [ ]; after = [ ]; serviceConfig = { }; }; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

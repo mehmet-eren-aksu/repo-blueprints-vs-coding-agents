@@ -1,0 +1,20 @@
+{
+  "id": "g2-stdin-filepath-files",
+  "feature": "g2.discovery",
+  "desc": "--stdin-filepath selects [[files]] entries for JSON stdin",
+  "args": [
+    "--stdin-filepath",
+    "{tmp}/deps.lock.json"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[[files]]\npattern = \"*.lock.json\"\nattrs.sort = false\n"
+  },
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

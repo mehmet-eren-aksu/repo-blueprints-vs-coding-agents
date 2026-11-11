@@ -1,0 +1,9 @@
+{
+  "id": "cli-invalid-toml",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: invalid TOML in --config-toml: TOML parse error at line 1, column 13\n  |\n1 | formatter = \n  |             ^\n\n\n"
+}

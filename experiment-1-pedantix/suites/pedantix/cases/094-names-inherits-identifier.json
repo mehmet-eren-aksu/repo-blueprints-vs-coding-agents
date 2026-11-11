@@ -1,0 +1,10 @@
+{
+  "id": "names-inherits-identifier",
+  "feature": "names",
+  "desc": "name-style on inherits",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[inherits]\nsort = true\nname-style = \"identifier\""
+  ],
+  "stdin": "{ inherit \"b\" a; }\n"
+}

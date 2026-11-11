@@ -1,0 +1,11 @@
+{
+  "id": "cli-version",
+  "feature": "cli.io",
+  "desc": "--version exits 0",
+  "args": [
+    "--version"
+  ],
+  "compare": [
+    "exit"
+  ]
+}

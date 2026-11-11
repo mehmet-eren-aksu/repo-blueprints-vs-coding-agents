@@ -1,0 +1,11 @@
+{
+  "id": "inherit-placement-front",
+  "feature": "sort.inherits",
+  "desc": "inherit lines go first by default",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ z = 1; inherit b; a = 2; inherit (pkgs) y; }\n",
+  "idempotent": true
+}

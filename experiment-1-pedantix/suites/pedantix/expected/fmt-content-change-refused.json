@@ -1,0 +1,9 @@
+{
+  "id": "fmt-content-change-refused",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: internal error: reordering would have changed the file's content; refusing to write output. Please report this as a pedantix bug.\n"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "g2-unknown-config-key",
+  "feature": "g2.errors",
+  "desc": "Unknown config keys are still rejected when formatting JSON",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\ncolour = true",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

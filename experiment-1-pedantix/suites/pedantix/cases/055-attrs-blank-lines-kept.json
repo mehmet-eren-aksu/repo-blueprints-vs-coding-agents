@@ -1,0 +1,11 @@
+{
+  "id": "attrs-blank-lines-kept",
+  "feature": "sort.attrs",
+  "desc": "Blank lines and comments when reordering",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  c = 3;\n\n  # second group\n  b = 2;\n  a = 1;\n}\n",
+  "idempotent": true
+}

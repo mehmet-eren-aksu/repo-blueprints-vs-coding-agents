@@ -1,0 +1,12 @@
+{
+  "id": "g3-files-pattern",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "data.json": "{\n  \"a\": 2,\n  \"b\": 1\n}\n",
+    "locked.json": "{\n  \"b\": 1,\n  \"a\": 2\n}\n"
+  }
+}

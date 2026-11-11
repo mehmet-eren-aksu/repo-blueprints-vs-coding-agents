@@ -1,0 +1,16 @@
+{
+  "id": "g2-first-last-listed-order",
+  "feature": "g2.config",
+  "desc": "first and last keep the order they are listed in",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nfirst = [\"enable\", \"package\"]\nlast = [\"zz\", \"extra\"]",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"extra\": 1, \"b\": 2, \"package\": 3, \"zz\": 4, \"enable\": true, \"a\": 5}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

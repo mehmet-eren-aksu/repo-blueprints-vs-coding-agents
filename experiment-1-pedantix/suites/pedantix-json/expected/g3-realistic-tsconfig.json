@@ -1,0 +1,9 @@
+{
+  "id": "g3-realistic-tsconfig",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"compilerOptions\": {\n    \"lib\": [\n      \"ES2022\",\n      \"DOM\"\n    ],\n    \"module\": \"ESNext\",\n    \"paths\": {\n      \"#lib/*\": [\n        \"./lib/*\"\n      ],\n      \"@/*\": [\n        \"./src/*\"\n      ]\n    },\n    \"strict\": true,\n    \"target\": \"ES2022\"\n  },\n  \"exclude\": [\n    \"node_modules\"\n  ],\n  \"include\": [\n    \"src\",\n    \"tests\"\n  ]\n}\n",
+  "files": {}
+}

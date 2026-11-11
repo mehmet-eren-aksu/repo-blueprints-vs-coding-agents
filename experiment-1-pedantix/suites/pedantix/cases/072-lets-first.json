@@ -1,0 +1,10 @@
+{
+  "id": "lets-first",
+  "feature": "sort.lets",
+  "desc": "lets.first",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[lets]\nsort = true\nfirst = [\"cfg\"]"
+  ],
+  "stdin": "let\n  b = 1;\n  cfg = 2;\n  a = 3;\nin\nb\n"
+}

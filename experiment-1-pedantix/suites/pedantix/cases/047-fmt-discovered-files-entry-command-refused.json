@@ -1,0 +1,15 @@
+{
+  "id": "fmt-discovered-files-entry-command-refused",
+  "feature": "formatter.safety",
+  "desc": "A [[files]] formatter-command in a discovered config is refused too",
+  "args": [
+    "{tmp}/f.nix"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[[files]]\npattern = \"*.nix\"\nformatter-command = [\"cat\"]\n",
+    "f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

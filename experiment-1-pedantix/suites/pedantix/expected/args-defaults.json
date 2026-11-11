@@ -1,0 +1,9 @@
+{
+  "id": "args-defaults",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a ? null, lib, pkgs, z ? 1, ... }:\nlib\n",
+  "files": {},
+  "stderr_sample": ""
+}

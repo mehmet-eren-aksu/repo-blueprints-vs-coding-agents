@@ -1,0 +1,16 @@
+{
+  "id": "g2-byte-order-digits",
+  "feature": "g2.sort",
+  "desc": "a10 before a2 (byte order, not natural order)",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"a10\": 1, \"a2\": 2, \"a1\": 3, \"a\": 4}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

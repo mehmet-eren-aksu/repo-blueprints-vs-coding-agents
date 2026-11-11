@@ -1,0 +1,9 @@
+{
+  "id": "spacing-mode-all",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = 1;\n\n  b = 2;\n\n  c = { x = 1; y = 2; };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

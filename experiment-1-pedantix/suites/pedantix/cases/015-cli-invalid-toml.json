@@ -1,0 +1,14 @@
+{
+  "id": "cli-invalid-toml",
+  "feature": "config.errors",
+  "desc": "Invalid TOML is rejected",
+  "args": [
+    "--config-toml",
+    "formatter = "
+  ],
+  "stdin": "{ a = 1; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "attrs-sort-false-with-first",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ c = 1; enable = true; a = 2; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

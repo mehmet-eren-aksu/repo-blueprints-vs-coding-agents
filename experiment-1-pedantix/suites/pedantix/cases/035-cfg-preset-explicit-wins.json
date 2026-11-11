@@ -1,0 +1,10 @@
+{
+  "id": "cfg-preset-explicit-wins",
+  "feature": "config.presets",
+  "desc": "Explicit settings win over the preset",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\npreset = \"nixos-module\"\n[args]\nfirst = [\"pkgs\"]"
+  ],
+  "stdin": "{ lib, pkgs, config, ... }:\n{ }\n"
+}

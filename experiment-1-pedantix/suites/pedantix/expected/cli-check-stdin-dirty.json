@@ -1,0 +1,9 @@
+{
+  "id": "cli-check-stdin-dirty",
+  "valid": true,
+  "problems": [],
+  "exit": 1,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": ""
+}

@@ -1,0 +1,17 @@
+{
+  "id": "cfg-explicit-path",
+  "feature": "config.discovery",
+  "desc": "--config names the config file explicitly",
+  "args": [
+    "--config",
+    "{tmp}/conf/x.toml",
+    "{tmp}/f.nix"
+  ],
+  "files": {
+    "conf/x.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "f.nix": "{ a = 1; c = 2; b = 3; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

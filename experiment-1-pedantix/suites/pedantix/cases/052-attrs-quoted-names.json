@@ -1,0 +1,11 @@
+{
+  "id": "attrs-quoted-names",
+  "feature": "sort.attrs",
+  "desc": "Quoted names sort by their content",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ \"b\" = 1; a = 2; \"c d\" = 3; \"A\" = 4; }\n",
+  "idempotent": true
+}

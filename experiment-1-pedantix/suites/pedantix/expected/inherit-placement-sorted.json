@@ -1,0 +1,9 @@
+{
+  "id": "inherit-placement-sorted",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = 2; inherit b; z = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

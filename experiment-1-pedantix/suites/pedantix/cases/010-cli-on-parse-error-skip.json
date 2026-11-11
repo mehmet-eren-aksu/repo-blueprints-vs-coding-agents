@@ -1,0 +1,10 @@
+{
+  "id": "cli-on-parse-error-skip",
+  "feature": "cli.errors",
+  "desc": "on-parse-error = skip passes unparsable input through",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\non-parse-error = \"skip\""
+  ],
+  "stdin": "{ b = [ 1 2 ] |> f; a = 1; }\n"
+}

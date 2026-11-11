@@ -1,0 +1,9 @@
+{
+  "id": "cfg-preset-alphabetical",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ lib, pkgs, ... }:\n{ a = 2; b = 1; enable = true; imports = [ ]; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

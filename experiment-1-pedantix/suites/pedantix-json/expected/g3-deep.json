@@ -1,0 +1,9 @@
+{
+  "id": "g3-deep",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"a\": {\n    \"x\": 2,\n    \"y\": 1\n  },\n  \"d\": {\n    \"b\": 1,\n    \"c\": {\n      \"a\": 1,\n      \"b\": {\n        \"a\": 2,\n        \"z\": 1\n      }\n    }\n  }\n}\n",
+  "files": {}
+}

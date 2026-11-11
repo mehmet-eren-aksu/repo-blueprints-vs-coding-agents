@@ -1,0 +1,9 @@
+{
+  "id": "args-sort-false",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ pkgs, lib }:\nlib\n",
+  "files": {},
+  "stderr_sample": ""
+}

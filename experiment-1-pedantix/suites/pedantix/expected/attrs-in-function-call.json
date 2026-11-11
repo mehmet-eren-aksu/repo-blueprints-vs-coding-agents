@@ -1,0 +1,9 @@
+{
+  "id": "attrs-in-function-call",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "pkgs.mkShell { buildInputs = [ ]; name = \"x\"; packages = [ ]; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

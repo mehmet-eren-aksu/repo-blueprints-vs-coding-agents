@@ -1,0 +1,9 @@
+{
+  "id": "lists-override-path",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  environment.systemPackages = [ pkgs.git pkgs.vim ];\n  other = [ b a ];\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

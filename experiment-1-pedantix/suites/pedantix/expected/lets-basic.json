@@ -1,0 +1,9 @@
+{
+  "id": "lets-basic",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "let\n  b = 1;\n  a = 2;\nin\n{ x = b; y = a; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

@@ -1,0 +1,10 @@
+{
+  "id": "merge-off-by-default",
+  "feature": "attrs.merge",
+  "desc": "No merging without merge = true",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ a.c = 1; b = 2; a.b = 3; }\n"
+}

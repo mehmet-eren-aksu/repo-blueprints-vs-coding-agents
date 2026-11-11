@@ -1,0 +1,9 @@
+{
+  "id": "args-multiline-comments",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  config, # cfg\n  # the library\n  lib,\n  pkgs,\n  ...\n}:\n{ }\n",
+  "files": {},
+  "stderr_sample": ""
+}

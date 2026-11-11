@@ -1,0 +1,9 @@
+{
+  "id": "attrs-multiline-values",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = [\n    1\n    2\n  ];\n  b = ''\n    line one\n    line two\n  '';\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

@@ -1,0 +1,11 @@
+{
+  "id": "cli-invalid-nix-file-untouched",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {
+    "bad.nix": "{ b = 1; a = ; }\n"
+  },
+  "stderr_sample": "pedantix: while formatting {tmp}/bad.nix: input is not valid Nix (parse error); refusing to reorder\n"
+}

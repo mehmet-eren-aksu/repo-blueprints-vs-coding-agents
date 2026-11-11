@@ -1,0 +1,11 @@
+{
+  "id": "g2-xdg-global-config",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "proj/data.json": "{\n  \"b\": 3,\n  \"c\": 2,\n  \"a\": 1\n}\n"
+  }
+}

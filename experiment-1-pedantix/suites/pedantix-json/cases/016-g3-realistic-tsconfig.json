@@ -1,0 +1,16 @@
+{
+  "id": "g3-realistic-tsconfig",
+  "feature": "g3.realistic",
+  "desc": "A tsconfig.json with defaults",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/tsconfig.json"
+  ],
+  "stdin": "{\n  \"include\": [\"src\", \"tests\"],\n  \"compilerOptions\": {\n    \"strict\": true,\n    \"target\": \"ES2022\",\n    \"paths\": {\"@/*\": [\"./src/*\"], \"#lib/*\": [\"./lib/*\"]},\n    \"module\": \"ESNext\",\n    \"lib\": [\"ES2022\", \"DOM\"]\n  },\n  \"exclude\": [\"node_modules\"]\n}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

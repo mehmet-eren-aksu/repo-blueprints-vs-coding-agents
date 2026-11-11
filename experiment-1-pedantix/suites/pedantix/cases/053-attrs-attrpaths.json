@@ -1,0 +1,11 @@
+{
+  "id": "attrs-attrpaths",
+  "feature": "sort.attrs",
+  "desc": "Dotted attrpaths sort component by component",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ b.x = 1; a.z = 2; a.y = 3; a = { }; }\n",
+  "idempotent": true
+}

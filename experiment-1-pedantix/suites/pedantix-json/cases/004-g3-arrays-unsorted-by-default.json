@@ -1,0 +1,16 @@
+{
+  "id": "g3-arrays-unsorted-by-default",
+  "feature": "g3.arrays",
+  "desc": "Arrays keep their order by default ([lists] sort is off)",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"xs\": [\"b\", \"a\", \"c\"], \"n\": [3, 1, 2]}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "flatten-and-merge",
+  "feature": "attrs.merge",
+  "desc": "merge and flatten together",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nmerge = true\nflatten = true"
+  ],
+  "stdin": "{ x = { y = 1; }; a.b = 1; a.c = 2; }\n",
+  "idempotent": true
+}

@@ -1,0 +1,9 @@
+{
+  "id": "g3-values-verbatim",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"s\": \"tab\\there\",\n  \"t\": null,\n  \"u\": true,\n  \"v\": \"caf\\u00e9\\n\",\n  \"w\": -0,\n  \"x\": 12345678901234567890,\n  \"y\": 1e10,\n  \"z\": 1.0\n}\n",
+  "files": {}
+}

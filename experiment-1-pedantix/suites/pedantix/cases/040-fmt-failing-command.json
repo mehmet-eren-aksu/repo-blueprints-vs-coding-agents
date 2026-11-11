@@ -1,0 +1,14 @@
+{
+  "id": "fmt-failing-command",
+  "feature": "formatter",
+  "desc": "A base formatter that fails is an error",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"false\"]"
+  ],
+  "stdin": "{ a = 1; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "cfg-warning-ignored-key",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "f.nix": "{ a = 2; b = 1; }\n"
+  },
+  "stderr_sample": "pedantix: warning: /private{tmp}/pedantix.toml: `lets.merge` has no effect; only `attrs` supports `merge`\n"
+}

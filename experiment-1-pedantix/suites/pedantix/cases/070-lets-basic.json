@@ -1,0 +1,10 @@
+{
+  "id": "lets-basic",
+  "feature": "sort.lets",
+  "desc": "let bindings are not sorted by default",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "let\n  b = 1;\n  a = 2;\nin\n{ y = a; x = b; }\n"
+}

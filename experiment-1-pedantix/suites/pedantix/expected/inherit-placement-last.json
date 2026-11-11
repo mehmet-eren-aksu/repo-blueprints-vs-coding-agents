@@ -1,0 +1,9 @@
+{
+  "id": "inherit-placement-last",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = 2; z = 1; inherit b; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

@@ -1,0 +1,25 @@
+{
+  "id": "g2-discovery-stops-at-git-root",
+  "feature": "g2.discovery",
+  "desc": "A config above the git root is not used",
+  "args": [
+    "--formatter",
+    "off",
+    "{tmp}/repo/data.json"
+  ],
+  "dirs": [
+    "repo/.git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "repo/data.json": "{\"a\": 1, \"c\": 2, \"b\": 3}\n"
+  },
+  "watch_files": [
+    "repo/data.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

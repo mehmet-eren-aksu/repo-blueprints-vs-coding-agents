@@ -1,0 +1,9 @@
+{
+  "id": "merge-basic",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  programs = {\n    emacs.enable = true;\n    kitty.enable = true;\n  };\n  services = {\n    foo = {\n      address = \"::\";\n      port = 1;\n    };\n  };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

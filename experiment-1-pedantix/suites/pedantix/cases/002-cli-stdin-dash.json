@@ -1,0 +1,11 @@
+{
+  "id": "cli-stdin-dash",
+  "feature": "cli.io",
+  "desc": "A single '-' also means stdin",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "-"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

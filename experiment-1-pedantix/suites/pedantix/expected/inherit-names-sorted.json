@@ -1,0 +1,9 @@
+{
+  "id": "inherit-names-sorted",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ inherit (pkgs) a b c; z = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

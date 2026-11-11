@@ -1,0 +1,11 @@
+{
+  "id": "g2-invalid-json-file-untouched",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 2,
+  "stdout": "",
+  "files": {
+    "bad.json": "{\"b\": 1, \"a\": }\n"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "attrs-attrpaths",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = { }; a.y = 3; a.z = 2; b.x = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

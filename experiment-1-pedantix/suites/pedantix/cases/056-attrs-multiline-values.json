@@ -1,0 +1,11 @@
+{
+  "id": "attrs-multiline-values",
+  "feature": "sort.attrs",
+  "desc": "Multi-line values move intact",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  b = ''\n    line one\n    line two\n  '';\n  a = [\n    1\n    2\n  ];\n}\n",
+  "idempotent": true
+}

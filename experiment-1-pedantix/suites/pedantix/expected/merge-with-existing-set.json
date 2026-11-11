@@ -1,0 +1,9 @@
+{
+  "id": "merge-with-existing-set",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = { c = 2; }; a.b = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

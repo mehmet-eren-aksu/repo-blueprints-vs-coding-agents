@@ -1,0 +1,14 @@
+{
+  "id": "inherit-placement-first-invalid",
+  "feature": "config.errors",
+  "desc": "'first' is rejected although the example config lists it",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ninherit-placement = \"first\""
+  ],
+  "stdin": "{ z = 1; inherit b; a = 2; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

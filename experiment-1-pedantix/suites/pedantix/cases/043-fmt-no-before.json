@@ -1,0 +1,10 @@
+{
+  "id": "fmt-no-before",
+  "feature": "formatter",
+  "desc": "format-before-sort = false",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"sed\", \"s/$/ /\"]\nformat-before-sort = false"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

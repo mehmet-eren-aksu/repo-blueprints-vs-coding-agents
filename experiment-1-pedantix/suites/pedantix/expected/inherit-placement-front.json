@@ -1,0 +1,9 @@
+{
+  "id": "inherit-placement-front",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ inherit b; inherit (pkgs) y; a = 2; z = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

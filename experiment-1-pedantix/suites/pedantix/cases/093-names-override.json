@@ -1,0 +1,10 @@
+{
+  "id": "names-override",
+  "feature": "names",
+  "desc": "name-style per path with flatten",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nflatten = true\nname-style = \"identifier\"\n[[overrides]]\npath = \"**.users.users\"\nattrs.name-style = \"string\""
+  ],
+  "stdin": "{\n  users.users = {\n    bob = {\n      isNormalUser = true;\n    };\n  };\n}\n"
+}

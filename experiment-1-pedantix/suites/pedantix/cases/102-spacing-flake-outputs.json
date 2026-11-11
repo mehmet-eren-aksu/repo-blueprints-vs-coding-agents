@@ -1,0 +1,16 @@
+{
+  "id": "spacing-flake-outputs",
+  "feature": "spacing",
+  "desc": "In flake.nix, the outputs body counts as top-level",
+  "args": [
+    "--stdin-filepath",
+    "{tmp}/flake.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\ntop-level-blank-lines = 1\n"
+  },
+  "stdin": "{\n  outputs =\n    { self }:\n    {\n      p = 1;\n      q = {\n        r = 2;\n      };\n    };\n}\n"
+}

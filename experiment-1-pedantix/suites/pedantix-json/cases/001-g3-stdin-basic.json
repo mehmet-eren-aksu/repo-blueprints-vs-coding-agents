@@ -1,0 +1,16 @@
+{
+  "id": "g3-stdin-basic",
+  "feature": "g3.basic",
+  "desc": "--stdin-filepath *.json: keys of an object are sorted",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

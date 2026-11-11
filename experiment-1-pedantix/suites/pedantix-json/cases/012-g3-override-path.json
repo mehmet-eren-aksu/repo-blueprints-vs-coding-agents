@@ -1,0 +1,16 @@
+{
+  "id": "g3-override-path",
+  "feature": "g3.config",
+  "desc": "[[overrides]] path selects one JSON object",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"scripts\"\nattrs.sort = false",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"scripts\": {\"test\": \"t\", \"build\": \"b\", \"lint\": \"l\"}, \"name\": \"x\", \"dependencies\": {\"zod\": \"1\", \"axios\": \"1\"}}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

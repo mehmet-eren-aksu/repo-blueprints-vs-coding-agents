@@ -1,0 +1,9 @@
+{
+  "id": "attrs-digits",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = 4; a1 = 3; a10 = 1; a2 = 2; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

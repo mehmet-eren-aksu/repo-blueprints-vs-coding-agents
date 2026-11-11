@@ -1,0 +1,21 @@
+{
+  "id": "fmt-xdg-command-allowed",
+  "feature": "formatter.safety",
+  "desc": "formatter-command from the global XDG config is executed",
+  "args": [
+    "{tmp}/proj/f.nix"
+  ],
+  "dirs": [
+    "proj/.git"
+  ],
+  "env": {
+    "XDG_CONFIG_HOME": "{tmp}/xdg"
+  },
+  "files": {
+    "xdg/pedantix/pedantix.toml": "formatter-command = [\"cat\"]\n",
+    "proj/f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "proj/f.nix"
+  ]
+}

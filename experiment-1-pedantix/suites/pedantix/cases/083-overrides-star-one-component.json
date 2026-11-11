@@ -1,0 +1,10 @@
+{
+  "id": "overrides-star-one-component",
+  "feature": "overrides",
+  "desc": "* matches exactly one path component",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"systemd.services.*\"\nattrs.first = [\"description\", \"wantedBy\"]"
+  ],
+  "stdin": "{ systemd.services.foo = { serviceConfig = { }; wantedBy = [ ]; description = \"d\"; after = [ ]; }; }\n"
+}

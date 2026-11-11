@@ -1,0 +1,12 @@
+{
+  "id": "cfg-files-cwd-anchored",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "top.nix": "{ b = 1; a = 2; }\n",
+    "pkgs/nested.nix": "{ a = 2; b = 1; }\n"
+  },
+  "stderr_sample": ""
+}

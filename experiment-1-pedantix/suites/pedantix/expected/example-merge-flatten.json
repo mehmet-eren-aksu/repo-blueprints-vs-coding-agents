@@ -1,0 +1,9 @@
+{
+  "id": "example-merge-flatten",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  flake.modules.homeManager.git =\n    {\n      confLib,\n      config,\n      globals ? {\n        user.name = \"duck\";\n      },\n      lib,\n      minimal,\n      nixosConfig ? null,\n      ...\n    }:\n    let\n      gitUser = globals.user.name;\n      inherit (confLib.getConfig.repo.secrets.common.mail) bababear address1;\n      inherit (confLib.getConfig.repo.secrets.common) fullName;\n\n\n    in\n    {\n      config = {\n        programs = {\n          difftastic.enable = lib.mkIf (!minimal) true;\n          git = {\n          enable = true;\n        }\n        // lib.optionalAttrs (!minimal) {\n          includes = [\n            {\n              contents = {\n                commit.template = \"~/.gitmessage\";\n                github.user = gitUser;\n              };\n            }\n          ];\n          lfs.enable = true;\n          settings = {\n            alias = {\n              a = \"add\";\n              b = \"branch\";\n              c = \"commit\";\n              cl = \"clone\";\n              co = \"checkout\";\n              i = \"init\";\n              m = \"merge\";\n              p = \"pull\";\n              pp = \"push\";\n              r = \"restore\";\n              s = \"status\";\n            };\n            user = {\n              email = lib.mkIf ((nixosConfig != null) && !config.swarselsystems.isPublic) (\n                lib.mkDefault address1\n              );\n              name = lib.mkIf ((nixosConfig != null) && !config.swarselsystems.isPublic) fullName;\n            };\n          };\n          signing = {\n            format = \"openpgp\";\n            key = \"0x76FD3810215AE097\";\n            signByDefault = true;\n          };\n        };\n        };\n        swarselsystems.enabledHomeModules = [ \"git\" ];\n      };\n    };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

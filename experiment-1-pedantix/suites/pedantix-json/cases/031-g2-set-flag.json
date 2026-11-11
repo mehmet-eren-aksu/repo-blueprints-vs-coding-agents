@@ -1,0 +1,18 @@
+{
+  "id": "g2-set-flag",
+  "feature": "g2.config",
+  "desc": "--set works for JSON too",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--set",
+    "attrs.last=[\"a\"]",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"a\": 1, \"c\": 2, \"b\": 3}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

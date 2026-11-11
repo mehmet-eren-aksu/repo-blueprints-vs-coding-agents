@@ -1,0 +1,10 @@
+{
+  "id": "lists-default-unsorted",
+  "feature": "sort.lists",
+  "desc": "Lists are not sorted by default",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ xs = [ \"b\" \"a\" \"c\" ]; }\n"
+}

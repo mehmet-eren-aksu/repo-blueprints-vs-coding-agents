@@ -1,0 +1,9 @@
+{
+  "id": "cli-stdin-basic",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = 2; b = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

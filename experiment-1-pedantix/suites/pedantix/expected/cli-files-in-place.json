@@ -1,0 +1,12 @@
+{
+  "id": "cli-files-in-place",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "one.nix": "{ a = 2; b = 1; }\n",
+    "two.nix": "{ c = 2; d = 1; }\n"
+  },
+  "stderr_sample": ""
+}

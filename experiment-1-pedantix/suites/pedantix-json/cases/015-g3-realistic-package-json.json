@@ -1,0 +1,23 @@
+{
+  "id": "g3-realistic-package-json",
+  "feature": "g3.realistic",
+  "desc": "A package.json with a project config",
+  "args": [
+    "{tmp}/package.json"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nfirst = [\"name\", \"version\", \"description\", \"private\"]\n\n[[overrides]]\npath = \"scripts\"\nattrs.sort = false\n",
+    "package.json": "{\n  \"scripts\": {\"test\": \"vitest\", \"build\": \"tsc\", \"dev\": \"vite\"},\n  \"dependencies\": {\"zod\": \"^3.23.0\", \"react\": \"^18.3.1\", \"axios\": \"^1.7.2\"},\n  \"version\": \"0.4.1\",\n  \"devDependencies\": {\"vitest\": \"^2.0.0\", \"typescript\": \"^5.5.0\"},\n  \"name\": \"my-app\",\n  \"private\": true,\n  \"description\": \"demo\",\n  \"files\": [\"dist\", \"README.md\", \"LICENSE\"]\n}\n"
+  },
+  "watch_files": [
+    "package.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

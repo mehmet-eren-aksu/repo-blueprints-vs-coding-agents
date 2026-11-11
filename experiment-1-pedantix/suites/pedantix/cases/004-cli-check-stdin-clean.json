@@ -1,0 +1,11 @@
+{
+  "id": "cli-check-stdin-clean",
+  "feature": "cli.check",
+  "desc": "--check on already formatted stdin: exit 0",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--check"
+  ],
+  "stdin": "{ a = 2; b = 1; }\n"
+}

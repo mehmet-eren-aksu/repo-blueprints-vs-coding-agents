@@ -1,0 +1,11 @@
+{
+  "id": "names-string",
+  "feature": "names",
+  "desc": "name-style = string quotes every name",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nname-style = \"string\""
+  ],
+  "stdin": "{ b = 1; a = 2; }\n",
+  "idempotent": true
+}

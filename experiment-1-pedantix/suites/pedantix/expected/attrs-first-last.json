@@ -1,0 +1,9 @@
+{
+  "id": "attrs-first-last",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ enable = true; package = 3; a = 5; b = 2; zz = 4; extra = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

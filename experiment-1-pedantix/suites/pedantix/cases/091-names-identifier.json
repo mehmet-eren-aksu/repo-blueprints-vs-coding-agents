@@ -1,0 +1,11 @@
+{
+  "id": "names-identifier",
+  "feature": "names",
+  "desc": "name-style = identifier unquotes valid identifiers",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nname-style = \"identifier\""
+  ],
+  "stdin": "{\n  \"valid\" = true;\n  \"not valid\" = false;\n  \"kebab-case\" = true;\n  \"if\" = false;\n}\n",
+  "idempotent": true
+}

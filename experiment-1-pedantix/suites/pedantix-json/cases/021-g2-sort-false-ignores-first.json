@@ -1,0 +1,16 @@
+{
+  "id": "g2-sort-false-ignores-first",
+  "feature": "g2.config",
+  "desc": "sort = false keeps the order and ignores first",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nsort = false\nfirst = [\"enable\"]",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"c\": 1, \"enable\": true, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

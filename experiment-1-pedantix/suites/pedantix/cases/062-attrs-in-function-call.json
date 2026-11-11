@@ -1,0 +1,11 @@
+{
+  "id": "attrs-in-function-call",
+  "feature": "sort.attrs",
+  "desc": "Sets passed to function calls are sorted",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "pkgs.mkShell { packages = [ ]; name = \"x\"; buildInputs = [ ]; }\n",
+  "idempotent": true
+}

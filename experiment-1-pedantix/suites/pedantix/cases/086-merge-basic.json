@@ -1,0 +1,11 @@
+{
+  "id": "merge-basic",
+  "feature": "attrs.merge",
+  "desc": "merge combines bindings that share a first component",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nmerge = true"
+  ],
+  "stdin": "{\n  programs.emacs.enable = true;\n  services.foo.port = 1;\n  programs.kitty.enable = true;\n  services.foo.address = \"::\";\n}\n",
+  "idempotent": true
+}

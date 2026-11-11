@@ -1,0 +1,16 @@
+{
+  "id": "g3-empty-containers",
+  "feature": "g3.basic",
+  "desc": "Empty objects and arrays",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": {}, \"a\": []}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

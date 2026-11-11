@@ -1,0 +1,14 @@
+{
+  "id": "cli-unknown-config-key",
+  "feature": "config.errors",
+  "desc": "Unknown keys in a section are rejected",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\ncolour = true"
+  ],
+  "stdin": "{ a = 1; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

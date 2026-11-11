@@ -1,0 +1,18 @@
+{
+  "id": "cfg-discovered-upwards",
+  "feature": "config.discovery",
+  "desc": "Config is searched upwards to the repo root",
+  "args": [
+    "{tmp}/a/b/f.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nlast = [\"a\"]\n",
+    "a/b/f.nix": "{ a = 1; c = 2; b = 3; }\n"
+  },
+  "watch_files": [
+    "a/b/f.nix"
+  ]
+}

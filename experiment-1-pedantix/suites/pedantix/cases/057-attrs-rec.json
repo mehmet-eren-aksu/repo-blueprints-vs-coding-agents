@@ -1,0 +1,11 @@
+{
+  "id": "attrs-rec",
+  "feature": "sort.attrs",
+  "desc": "rec sets are sorted too",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "rec { b = a; a = 1; }\n",
+  "idempotent": true
+}

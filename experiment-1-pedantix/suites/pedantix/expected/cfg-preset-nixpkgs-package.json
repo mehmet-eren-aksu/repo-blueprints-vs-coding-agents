@@ -1,0 +1,9 @@
+{
+  "id": "cfg-preset-nixpkgs-package",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ lib, stdenv, fetchurl }:\nstdenv.mkDerivation {\n  pname = \"hello\";\n  version = \"1.0\";\n  src = fetchurl { url = \"u\"; hash = \"h\"; };\n  buildInputs = [ ];\n  meta = { description = \"d\"; license = lib.licenses.mit; };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

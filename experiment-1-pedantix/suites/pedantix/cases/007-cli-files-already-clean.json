@@ -1,0 +1,16 @@
+{
+  "id": "cli-files-already-clean",
+  "feature": "cli.io",
+  "desc": "A file that needs no change is left as is, exit 0",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/f.nix"
+  ],
+  "files": {
+    "f.nix": "{ a = 1; b = 2; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

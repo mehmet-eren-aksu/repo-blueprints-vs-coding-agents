@@ -1,0 +1,9 @@
+{
+  "id": "cli-invalid-nix",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: input is not valid Nix (parse error); refusing to reorder\n"
+}

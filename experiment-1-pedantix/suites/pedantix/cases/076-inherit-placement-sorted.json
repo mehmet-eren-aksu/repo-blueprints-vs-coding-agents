@@ -1,0 +1,10 @@
+{
+  "id": "inherit-placement-sorted",
+  "feature": "sort.inherits",
+  "desc": "inherit-placement = sorted",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ninherit-placement = \"sorted\""
+  ],
+  "stdin": "{ z = 1; inherit b; a = 2; }\n"
+}

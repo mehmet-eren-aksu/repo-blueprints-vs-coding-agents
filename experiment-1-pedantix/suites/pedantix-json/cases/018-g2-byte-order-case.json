@@ -1,0 +1,16 @@
+{
+  "id": "g2-byte-order-case",
+  "feature": "g2.sort",
+  "desc": "Upper case before lower case, '_' between (byte order, like Nix)",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"B\": 2, \"a\": 3, \"A\": 4, \"_c\": 5}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

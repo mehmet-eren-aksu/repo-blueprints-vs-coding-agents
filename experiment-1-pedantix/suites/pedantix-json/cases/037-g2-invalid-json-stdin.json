@@ -1,0 +1,16 @@
+{
+  "id": "g2-invalid-json-stdin",
+  "feature": "g2.errors",
+  "desc": "Invalid JSON exits with 2 and prints nothing",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

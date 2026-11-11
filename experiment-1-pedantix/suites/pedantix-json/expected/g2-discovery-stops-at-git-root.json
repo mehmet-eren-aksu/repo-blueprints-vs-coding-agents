@@ -1,0 +1,11 @@
+{
+  "id": "g2-discovery-stops-at-git-root",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "repo/data.json": "{\n  \"a\": 1,\n  \"b\": 3,\n  \"c\": 2\n}\n"
+  }
+}

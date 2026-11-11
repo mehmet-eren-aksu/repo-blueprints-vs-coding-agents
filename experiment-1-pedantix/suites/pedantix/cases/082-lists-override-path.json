@@ -1,0 +1,10 @@
+{
+  "id": "lists-override-path",
+  "feature": "overrides",
+  "desc": "lists.sort for one path only",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**.environment.systemPackages\"\nlists.sort = true"
+  ],
+  "stdin": "{\n  environment.systemPackages = [ pkgs.vim pkgs.git ];\n  other = [ b a ];\n}\n"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "flatten-basic",
+  "feature": "attrs.flatten",
+  "desc": "flatten collapses single-binding sets",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nflatten = true"
+  ],
+  "stdin": "{\n  a = {\n    b = {\n      c = 1;\n    };\n  };\n  d = {\n    e = 2;\n    f = 3;\n  };\n}\n",
+  "idempotent": true
+}

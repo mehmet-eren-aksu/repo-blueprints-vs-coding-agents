@@ -1,0 +1,23 @@
+{
+  "id": "cli-files-check",
+  "feature": "cli.check",
+  "desc": "--check on files: exit 1, files untouched, the dirty file is named",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--check",
+    "{tmp}/dirty.nix",
+    "{tmp}/clean.nix"
+  ],
+  "files": {
+    "dirty.nix": "{ b = 1; a = 2; }\n",
+    "clean.nix": "{ a = 1; b = 2; }\n"
+  },
+  "watch_files": [
+    "dirty.nix",
+    "clean.nix"
+  ],
+  "stderr_contains": [
+    "dirty.nix"
+  ]
+}

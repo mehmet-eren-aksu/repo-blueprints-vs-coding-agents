@@ -1,0 +1,9 @@
+{
+  "id": "lets-sort-true",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "let\n  a = 2;\n  b = 1;\n  c = 3;\nin\na + b + c\n",
+  "files": {},
+  "stderr_sample": ""
+}

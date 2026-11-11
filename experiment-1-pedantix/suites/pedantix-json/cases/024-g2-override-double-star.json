@@ -1,0 +1,16 @@
+{
+  "id": "g2-override-double-star",
+  "feature": "g2.overrides",
+  "desc": "'**' matches zero or more components",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**.dependencies\"\nattrs.sort = false",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"pkg\": {\"dependencies\": {\"y\": \"1\", \"b\": \"2\"}}, \"m\": 1, \"dependencies\": {\"z\": \"1\", \"a\": \"2\"}}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

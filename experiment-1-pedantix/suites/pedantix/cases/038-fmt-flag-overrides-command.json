@@ -1,0 +1,12 @@
+{
+  "id": "fmt-flag-overrides-command",
+  "feature": "formatter",
+  "desc": "--formatter off overrides a broken formatter-command",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"pedantix-missing-base-formatter\"]",
+    "--formatter",
+    "off"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

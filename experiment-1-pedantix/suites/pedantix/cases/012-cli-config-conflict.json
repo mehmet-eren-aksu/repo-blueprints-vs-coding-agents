@@ -1,0 +1,19 @@
+{
+  "id": "cli-config-conflict",
+  "feature": "cli.errors",
+  "desc": "--config and --config-toml cannot be combined",
+  "args": [
+    "--config",
+    "{tmp}/p.toml",
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ a = 1; }\n",
+  "files": {
+    "p.toml": "formatter = \"off\"\n"
+  },
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

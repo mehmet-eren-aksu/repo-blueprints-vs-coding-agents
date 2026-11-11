@@ -1,0 +1,10 @@
+{
+  "id": "overrides-double-star",
+  "feature": "overrides",
+  "desc": "** matches any depth",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**.settings.alias\"\nattrs.sort = false"
+  ],
+  "stdin": "{ programs.git.settings.alias = { c = \"commit\"; a = \"add\"; }; z.settings.alias = { y = 1; x = 2; }; b = 1; a = 2; }\n"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "fmt-missing-command",
+  "feature": "formatter",
+  "desc": "A missing base formatter is an error",
+  "args": [
+    "--config-toml",
+    "formatter-command = [\"pedantix-missing-base-formatter\"]"
+  ],
+  "stdin": "{ a = 1; }\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

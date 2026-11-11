@@ -1,0 +1,11 @@
+{
+  "id": "attrs-first-last",
+  "feature": "sort.attrs",
+  "desc": "attrs.first / attrs.last pin names",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nfirst = [\"enable\", \"package\"]\nlast = [\"zz\", \"extra\"]"
+  ],
+  "stdin": "{ extra = 1; b = 2; package = 3; zz = 4; enable = true; a = 5; }\n",
+  "idempotent": true
+}

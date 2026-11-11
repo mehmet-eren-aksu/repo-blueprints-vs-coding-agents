@@ -1,0 +1,16 @@
+{
+  "id": "g3-first-last",
+  "feature": "g3.config",
+  "desc": "[attrs] first / last pin JSON keys",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nfirst = [\"name\", \"version\"]\nlast = [\"scripts\"]",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"version\": \"1.0.0\", \"scripts\": {}, \"name\": \"x\", \"license\": \"MIT\", \"description\": \"d\"}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

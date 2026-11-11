@@ -1,0 +1,9 @@
+{
+  "id": "merge-off-by-default",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a.b = 3; a.c = 1; b = 2; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

@@ -1,0 +1,10 @@
+{
+  "id": "cfg-preset-nixpkgs-package",
+  "feature": "config.presets",
+  "desc": "preset = nixpkgs-package orders a derivation",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\npreset = \"nixpkgs-package\""
+  ],
+  "stdin": "{ stdenv, lib, fetchurl }:\nstdenv.mkDerivation {\n  version = \"1.0\";\n  src = fetchurl { url = \"u\"; hash = \"h\"; };\n  meta = { license = lib.licenses.mit; description = \"d\"; };\n  pname = \"hello\";\n  buildInputs = [ ];\n}\n"
+}

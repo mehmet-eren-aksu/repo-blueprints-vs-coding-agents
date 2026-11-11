@@ -1,0 +1,11 @@
+{
+  "id": "cli-check-stdin-dirty",
+  "feature": "cli.check",
+  "desc": "--check on stdin that would change: exit 1, nothing on stdout",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--check"
+  ],
+  "stdin": "{ b = 1; a = 2; }\n"
+}

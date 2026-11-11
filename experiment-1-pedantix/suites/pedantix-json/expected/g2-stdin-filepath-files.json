@@ -1,0 +1,9 @@
+{
+  "id": "g2-stdin-filepath-files",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "{\n  \"b\": 1,\n  \"a\": 2\n}\n",
+  "files": {}
+}

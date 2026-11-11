@@ -1,0 +1,11 @@
+{
+  "id": "attrs-comments-move",
+  "feature": "sort.attrs",
+  "desc": "Comments stay with their binding",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{\n  # about b\n  b = 1;\n  a = 2; # trailing a\n}\n",
+  "idempotent": true
+}

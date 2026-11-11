@@ -1,0 +1,16 @@
+{
+  "id": "cfg-stdin-filepath-files",
+  "feature": "config.files",
+  "desc": "--stdin-filepath selects [[files]] entries for stdin",
+  "args": [
+    "--stdin-filepath",
+    "{tmp}/hello.pkg.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "stdin": "{ a = 1; c = 2; b = 3; }\n",
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[[files]]\npattern = \"*.pkg.nix\"\nattrs.last = [\"a\"]\n"
+  }
+}

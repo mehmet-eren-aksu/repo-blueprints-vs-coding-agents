@@ -1,0 +1,11 @@
+{
+  "id": "cfg-discovered-upwards",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "a/b/f.nix": "{ b = 3; c = 2; a = 1; }\n"
+  },
+  "stderr_sample": ""
+}

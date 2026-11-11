@@ -1,0 +1,10 @@
+{
+  "id": "spacing-override-off",
+  "feature": "spacing",
+  "desc": "blank-lines-mode = off for one path",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nblank-lines = 1\nblank-lines-mode = \"all\"\n[[overrides]]\npath = \"a\"\nattrs.blank-lines-mode = \"off\""
+  ],
+  "stdin": "{\n  a = {\n    y = 1;\n    x = 2;\n  };\n  b = 3;\n}\n"
+}

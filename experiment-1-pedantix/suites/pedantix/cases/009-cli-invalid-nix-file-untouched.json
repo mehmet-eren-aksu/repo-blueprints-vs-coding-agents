@@ -1,0 +1,16 @@
+{
+  "id": "cli-invalid-nix-file-untouched",
+  "feature": "cli.errors",
+  "desc": "Invalid Nix file is not modified",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/bad.nix"
+  ],
+  "files": {
+    "bad.nix": "{ b = 1; a = ; }\n"
+  },
+  "watch_files": [
+    "bad.nix"
+  ]
+}

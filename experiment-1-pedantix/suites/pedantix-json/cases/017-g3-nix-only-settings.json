@@ -1,0 +1,16 @@
+{
+  "id": "g3-nix-only-settings",
+  "feature": "g3.config",
+  "desc": "Nix-only settings in the config do not break JSON",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\ninherit-placement = \"last\"\ntop-level-blank-lines = 1\n[lets]\nsort = true\n[attrs]\nmerge = true\nflatten = true",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

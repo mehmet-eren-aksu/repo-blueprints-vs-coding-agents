@@ -1,0 +1,13 @@
+{
+  "id": "cfg-files-patterns",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "module.nix": "{ a = 2; b = 1; }\n",
+    "hello.pkg.nix": "{ b = 1; a = 2; }\n",
+    "pkgs/nested.nix": "{ b = 1; a = 2; }\n"
+  },
+  "stderr_sample": ""
+}

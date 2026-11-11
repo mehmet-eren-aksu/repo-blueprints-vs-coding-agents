@@ -1,0 +1,9 @@
+{
+  "id": "attrs-blank-lines-kept",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = 1;\n  # second group\n  b = 2;\n  c = 3;\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

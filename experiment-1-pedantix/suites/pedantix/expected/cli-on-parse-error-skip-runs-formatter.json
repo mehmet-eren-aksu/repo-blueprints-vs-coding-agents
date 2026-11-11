@@ -1,0 +1,9 @@
+{
+  "id": "cli-on-parse-error-skip-runs-formatter",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ B = [ 1 2 ] |> F; A = 1; }\n",
+  "files": {},
+  "stderr_sample": "pedantix: warning: <stdin>: cannot parse; skipping reordering\n"
+}

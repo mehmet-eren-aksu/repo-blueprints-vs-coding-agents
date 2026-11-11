@@ -1,0 +1,24 @@
+{
+  "id": "cfg-files-patterns",
+  "feature": "config.files",
+  "desc": "[[files]] entries configure matching files only",
+  "args": [
+    "{tmp}/module.nix",
+    "{tmp}/hello.pkg.nix",
+    "{tmp}/pkgs/nested.nix"
+  ],
+  "dirs": [
+    ".git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n\n[[files]]\npattern = \"*.pkg.nix\"\nattrs.sort = false\n\n[[files]]\npattern = \"pkgs/*.nix\"\nattrs.first = [\"b\"]\n",
+    "module.nix": "{ b = 1; a = 2; }\n",
+    "hello.pkg.nix": "{ b = 1; a = 2; }\n",
+    "pkgs/nested.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "module.nix",
+    "hello.pkg.nix",
+    "pkgs/nested.nix"
+  ]
+}

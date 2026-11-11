@@ -1,0 +1,25 @@
+{
+  "id": "g3-files-pattern",
+  "feature": "g3.config",
+  "desc": "[[files]] entries match .json files",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n\n[[files]]\npattern = \"locked.json\"\nattrs.sort = false\n",
+    "{tmp}/data.json",
+    "{tmp}/locked.json"
+  ],
+  "cwd": ".",
+  "files": {
+    "data.json": "{\"b\": 1, \"a\": 2}\n",
+    "locked.json": "{\"b\": 1, \"a\": 2}\n"
+  },
+  "watch_files": [
+    "data.json",
+    "locked.json"
+  ],
+  "compare": [
+    "exit",
+    "json:files",
+    "stdout"
+  ]
+}

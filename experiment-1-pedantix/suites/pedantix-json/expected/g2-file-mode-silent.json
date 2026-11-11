@@ -1,0 +1,11 @@
+{
+  "id": "g2-file-mode-silent",
+  "valid": true,
+  "problems": [],
+  "source": "hand-written",
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "data.json": "{\n  \"a\": 2,\n  \"b\": 1\n}\n"
+  }
+}

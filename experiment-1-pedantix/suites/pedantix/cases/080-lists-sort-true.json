@@ -1,0 +1,11 @@
+{
+  "id": "lists-sort-true",
+  "feature": "sort.lists",
+  "desc": "lists.sort = true",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[lists]\nsort = true"
+  ],
+  "stdin": "{ xs = [ \"b\" \"a\" \"c\" ]; ys = [ pkgs.z pkgs.a ]; }\n",
+  "idempotent": true
+}

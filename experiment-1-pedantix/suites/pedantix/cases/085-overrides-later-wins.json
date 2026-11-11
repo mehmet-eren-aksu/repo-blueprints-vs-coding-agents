@@ -1,0 +1,10 @@
+{
+  "id": "overrides-later-wins",
+  "feature": "overrides",
+  "desc": "Later overrides win over earlier ones",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[[overrides]]\npath = \"**\"\nattrs.sort = false\n[[overrides]]\npath = \"keep\"\nattrs.sort = true"
+  ],
+  "stdin": "{ keep = { b = 1; a = 2; }; other = { d = 1; c = 2; }; }\n"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "attrs-case-sensitive",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ A = 4; B = 2; _c = 5; a = 3; b = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

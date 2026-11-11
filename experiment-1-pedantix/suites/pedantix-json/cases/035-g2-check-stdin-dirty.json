@@ -1,0 +1,17 @@
+{
+  "id": "g2-check-stdin-dirty",
+  "feature": "g2.cli",
+  "desc": "--check on unsorted JSON stdin: exit 1, nothing on stdout",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--check",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"b\": 1, \"a\": 2}\n",
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

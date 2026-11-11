@@ -1,0 +1,14 @@
+{
+  "id": "cli-missing-file",
+  "feature": "cli.errors",
+  "desc": "A file that does not exist is an error (exit 2)",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/nope.nix"
+  ],
+  "compare": [
+    "exit",
+    "stdout"
+  ]
+}

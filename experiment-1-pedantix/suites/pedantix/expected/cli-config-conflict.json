@@ -1,0 +1,9 @@
+{
+  "id": "cli-config-conflict",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "error: the argument '--config <CONFIG>' cannot be used with '--config-toml <TOML>'\n\nUsage: pedantix --config <CONFIG> [FILES]...\n\nFor more information, try '--help'.\n"
+}

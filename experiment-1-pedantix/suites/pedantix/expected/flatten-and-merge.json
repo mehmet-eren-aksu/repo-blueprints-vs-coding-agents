@@ -1,0 +1,9 @@
+{
+  "id": "flatten-and-merge",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ a = {\n    b = 1;\n    c = 2;\n  };\n  x.y = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

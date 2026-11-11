@@ -1,0 +1,11 @@
+{
+  "id": "args-first-last-defaulted",
+  "feature": "sort.args",
+  "desc": "<defaulted> and ... in args.last",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[args]\nfirst = [\"self\", \"lib\", \"config\", \"pkgs\"]\nlast = [\"<defaulted>\", \"...\"]"
+  ],
+  "stdin": "{ z ? 1, foo, pkgs, a ? null, lib, self, ... }:\nlib\n",
+  "idempotent": true
+}

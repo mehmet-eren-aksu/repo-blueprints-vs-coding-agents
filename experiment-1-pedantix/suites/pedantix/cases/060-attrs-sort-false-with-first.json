@@ -1,0 +1,10 @@
+{
+  "id": "attrs-sort-false-with-first",
+  "feature": "sort.attrs",
+  "desc": "sort = false with first",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[attrs]\nsort = false\nfirst = [\"enable\"]"
+  ],
+  "stdin": "{ c = 1; enable = true; a = 2; }\n"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "attrs-comments-move",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = 2; # trailing a\n  # about b\n  b = 1;\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

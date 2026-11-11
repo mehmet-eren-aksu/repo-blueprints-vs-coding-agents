@@ -1,0 +1,16 @@
+{
+  "id": "fmt-discovered-command-allowed",
+  "feature": "formatter.safety",
+  "desc": "--allow-formatter-command runs it",
+  "args": [
+    "--allow-formatter-command",
+    "{tmp}/f.nix"
+  ],
+  "files": {
+    "pedantix.toml": "formatter-command = [\"cat\"]\n",
+    "f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "f.nix"
+  ]
+}

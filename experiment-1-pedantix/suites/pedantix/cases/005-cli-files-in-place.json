@@ -1,0 +1,19 @@
+{
+  "id": "cli-files-in-place",
+  "feature": "cli.io",
+  "desc": "Files are rewritten in place",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "{tmp}/one.nix",
+    "{tmp}/two.nix"
+  ],
+  "files": {
+    "one.nix": "{ b = 1; a = 2; }\n",
+    "two.nix": "{ d = 1; c = 2; }\n"
+  },
+  "watch_files": [
+    "one.nix",
+    "two.nix"
+  ]
+}

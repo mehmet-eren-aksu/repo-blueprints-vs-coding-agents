@@ -1,0 +1,11 @@
+{
+  "id": "lists-sort-comments",
+  "feature": "sort.lists",
+  "desc": "Comments move with list elements",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"\n[lists]\nsort = true"
+  ],
+  "stdin": "[\n  # bee\n  b\n  a # ay\n  c\n]\n",
+  "idempotent": true
+}

@@ -1,0 +1,20 @@
+{
+  "id": "cfg-discovery-stops-at-git-root",
+  "feature": "config.discovery",
+  "desc": "A config above the git root is not used",
+  "args": [
+    "--formatter",
+    "off",
+    "{tmp}/repo/f.nix"
+  ],
+  "dirs": [
+    "repo/.git"
+  ],
+  "files": {
+    "pedantix.toml": "formatter = \"off\"\n[attrs]\nsort = false\n",
+    "repo/f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "watch_files": [
+    "repo/f.nix"
+  ]
+}

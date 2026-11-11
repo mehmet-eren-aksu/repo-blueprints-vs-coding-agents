@@ -1,0 +1,9 @@
+{
+  "id": "cfg-preset-nixos-module",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ config, lib, pkgs, ... }:\n{ a = 2; b = 1; }\n",
+  "files": {},
+  "stderr_sample": ""
+}

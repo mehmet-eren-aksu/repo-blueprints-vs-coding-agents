@@ -1,0 +1,9 @@
+{
+  "id": "cfg-preset-unknown",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: invalid configuration (--config-toml plus --set options): unknown preset `nope`; available presets: nixos-module, nixpkgs-package, alphabetical\n"
+}

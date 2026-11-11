@@ -1,0 +1,11 @@
+{
+  "id": "cfg-discovery-stops-at-git-root",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "repo/f.nix": "{ a = 2; b = 1; }\n"
+  },
+  "stderr_sample": ""
+}

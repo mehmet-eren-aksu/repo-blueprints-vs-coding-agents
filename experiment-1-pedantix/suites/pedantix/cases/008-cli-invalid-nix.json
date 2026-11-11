@@ -1,0 +1,10 @@
+{
+  "id": "cli-invalid-nix",
+  "feature": "cli.errors",
+  "desc": "Invalid Nix exits with 2",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ a = ; }\n"
+}

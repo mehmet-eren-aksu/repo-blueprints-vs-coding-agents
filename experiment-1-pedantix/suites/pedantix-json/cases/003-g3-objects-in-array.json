@@ -1,0 +1,16 @@
+{
+  "id": "g3-objects-in-array",
+  "feature": "g3.arrays",
+  "desc": "Objects inside an array are sorted, the array order stays",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "[{\"b\": 1, \"a\": 2}, {\"d\": 1, \"c\": 2}]\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

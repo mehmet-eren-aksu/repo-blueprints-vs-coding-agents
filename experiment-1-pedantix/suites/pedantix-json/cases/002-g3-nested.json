@@ -1,0 +1,16 @@
+{
+  "id": "g3-nested",
+  "feature": "g3.basic",
+  "desc": "Objects are sorted at every depth",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\n  \"z\": {\"y\": 1, \"x\": {\"q\": 1, \"p\": 2}},\n  \"a\": 1\n}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

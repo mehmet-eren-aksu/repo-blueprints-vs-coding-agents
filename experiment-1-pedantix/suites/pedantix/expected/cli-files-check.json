@@ -1,0 +1,12 @@
+{
+  "id": "cli-files-check",
+  "valid": true,
+  "problems": [],
+  "exit": 1,
+  "stdout": "",
+  "files": {
+    "dirty.nix": "{ b = 1; a = 2; }\n",
+    "clean.nix": "{ a = 1; b = 2; }\n"
+  },
+  "stderr_sample": "would reformat: {tmp}/dirty.nix\n"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "flatten-basic",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a.b.c = 1;\n  d = {\n    e = 2;\n    f = 3;\n  };\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

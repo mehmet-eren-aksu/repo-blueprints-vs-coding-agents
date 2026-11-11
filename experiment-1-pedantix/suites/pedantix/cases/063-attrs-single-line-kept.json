@@ -1,0 +1,11 @@
+{
+  "id": "attrs-single-line-kept",
+  "feature": "sort.attrs",
+  "desc": "A single-line set stays on one line",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\""
+  ],
+  "stdin": "{ x = { c = 1; b = 2; a = 3; }; }\n",
+  "idempotent": true
+}

@@ -1,0 +1,9 @@
+{
+  "id": "inherit-placement-first-invalid",
+  "valid": true,
+  "problems": [],
+  "exit": 2,
+  "stdout": "",
+  "files": {},
+  "stderr_sample": "pedantix: invalid configuration (--config-toml plus --set options): unknown variant `first`, expected one of `front`, `last`, `sorted`\nin `inherit-placement`\n\n"
+}

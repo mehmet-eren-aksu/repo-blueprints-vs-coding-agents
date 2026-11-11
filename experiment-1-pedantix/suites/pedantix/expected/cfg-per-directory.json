@@ -1,0 +1,12 @@
+{
+  "id": "cfg-per-directory",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "",
+  "files": {
+    "a/f.nix": "{ a = 2; b = 1; }\n",
+    "b/f.nix": "{ b = 1; a = 2; }\n"
+  },
+  "stderr_sample": ""
+}

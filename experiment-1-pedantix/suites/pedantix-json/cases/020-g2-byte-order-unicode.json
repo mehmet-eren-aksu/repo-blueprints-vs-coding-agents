@@ -1,0 +1,16 @@
+{
+  "id": "g2-byte-order-unicode",
+  "feature": "g2.sort",
+  "desc": "Non-ASCII keys sort after ASCII (byte order)",
+  "args": [
+    "--config-toml",
+    "formatter = \"off\"",
+    "--stdin-filepath",
+    "{tmp}/data.json"
+  ],
+  "stdin": "{\"z\": 1, \"été\": 2, \"a\": 3, \"Zebra\": 4}\n",
+  "compare": [
+    "exit",
+    "json:stdout"
+  ]
+}

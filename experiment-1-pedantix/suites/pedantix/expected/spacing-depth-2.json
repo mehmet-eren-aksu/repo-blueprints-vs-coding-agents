@@ -1,0 +1,9 @@
+{
+  "id": "spacing-depth-2",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{\n  a = {\n    x = 2;\n\n    y = 1;\n  };\n\n  b = 3;\n}\n",
+  "files": {},
+  "stderr_sample": ""
+}

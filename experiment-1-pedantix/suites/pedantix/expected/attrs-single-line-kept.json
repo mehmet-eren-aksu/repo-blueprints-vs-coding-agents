@@ -1,0 +1,9 @@
+{
+  "id": "attrs-single-line-kept",
+  "valid": true,
+  "problems": [],
+  "exit": 0,
+  "stdout": "{ x = { a = 3; b = 2; c = 1; }; }\n",
+  "files": {},
+  "stderr_sample": ""
+}
